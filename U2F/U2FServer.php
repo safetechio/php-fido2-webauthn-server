@@ -150,8 +150,8 @@ class U2FServer
 
         // Build a verification string from the components we've made in this function
         $dataToVerify  = chr(0);
-        $dataToVerify .= hash('sha256', $request->appId(), true);
-        $dataToVerify .= hash('sha256', $clientData, true);
+        $dataToVerify .= static::SHA256($request->appId(), true);
+        $dataToVerify .= static::SHA256($clientData, true);
         $dataToVerify .= $keyHandle;
         $dataToVerify .= $pubKey;
 
@@ -313,9 +313,9 @@ class U2FServer
 
         // Build signature and data from response
         $signData = static::base64u_decode($response->signatureData);
-        $dataToVerify  = hash('sha256', $req->appId(), true);
+        $dataToVerify  = static::SHA256($req->appId(), true);
         $dataToVerify .= substr($signData, 0, 5);
-        $dataToVerify .= hash('sha256', $clientData, true);
+        $dataToVerify .= static::SHA256($clientData, true);
         $signature = substr($signData, 5);
 
         // Verify the response data against the public key
@@ -378,6 +378,16 @@ class U2FServer
     }
 
     /**
+     * @param $input
+     * @param $rawOutput
+     * @return string
+     */
+    protected static function SHA256($input, $rawOutput = false)
+    {
+        return hash('sha256', $input, $rawOutput);
+    }
+
+    /**
      * @param string $key
      * @return null|string
      */
@@ -437,7 +447,7 @@ class U2FServer
      */
     private static function fixSignatureUnusedBits($cert)
     {
-        if(in_array(hash('sha256', $cert), static::$FIXCERTS)) {
+        if(in_array(static::SHA256($cert), static::$FIXCERTS)) {
             $cert[strlen($cert) - 257] = "\0";
         }
         return $cert;
