@@ -1,12 +1,5 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: samuel
- * Date: 09/12/2016
- * Time: 15:14
- */
-
-namespace Samyoul\U2F\U2FServer;
+namespace SAFETECHio\FIDO2\U2F;
 
 
 class SignRequest implements \JsonSerializable
