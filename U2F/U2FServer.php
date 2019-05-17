@@ -119,13 +119,13 @@ class U2FServer
                 U2FException::PUBKEY_DECODE
             );
         }
-        $registration->setPublicKey(base64_encode($pubKey));
+        $registration->publicKey = base64_encode($pubKey);
 
         // Build and set the key handle.
         $keyHandleLength = $registrationData[$offset++];
         $keyHandle = substr($rawRegistration, $offset, $keyHandleLength);
         $offset += $keyHandleLength;
-        $registration->setKeyHandle(static::base64u_encode($keyHandle));
+        $registration->keyHandle = static::base64u_encode($keyHandle);
 
         // Build certificate
         // Set certificate length
@@ -141,7 +141,7 @@ class U2FServer
         $pemCert .= chunk_split(base64_encode($rawCert), 64);
         $pemCert .= "-----END CERTIFICATE-----";
         if($includeCert) {
-            $registration->setCertificate( base64_encode($rawCert) );
+            $registration->certificate = base64_encode($rawCert);
         }
 
         // If we've set the attestDir, check the given certificate can be used.
