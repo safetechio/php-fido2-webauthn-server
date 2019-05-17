@@ -1,8 +1,10 @@
 <?php
 namespace SAFETECHio\FIDO2\U2F;
 
+use JsonSerializable;
 
-class RegistrationRequest implements \JsonSerializable
+
+class RegistrationRequest implements JsonSerializable
 {
     /** Protocol version */
     protected $version = U2FServer::VERSION;

@@ -1,8 +1,10 @@
 <?php
 namespace SAFETECHio\FIDO2\U2F;
 
+use Exception;
 
-class U2FException extends \Exception
+
+class U2FException extends Exception
 {
     /** Error for the authentication message not matching any outstanding
      * authentication request */
@@ -45,9 +47,9 @@ class U2FException extends \Exception
      * Override constructor and make message and code mandatory
      * @param string $message
      * @param int $code
-     * @param \Exception|null $previous
+     * @param Exception|null $previous
      */
-    public function __construct($message, $code, \Exception $previous = null) {
+    public function __construct($message, $code, Exception $previous = null) {
         parent::__construct($message, $code, $previous);
     }
 }

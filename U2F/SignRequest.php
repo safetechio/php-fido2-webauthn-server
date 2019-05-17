@@ -2,7 +2,10 @@
 namespace SAFETECHio\FIDO2\U2F;
 
 
-class SignRequest implements \JsonSerializable
+use JsonSerializable;
+
+
+class SignRequest implements JsonSerializable
 {
     /** Protocol version */
     protected $version = U2FServer::VERSION;
