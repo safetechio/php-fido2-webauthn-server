@@ -19,6 +19,7 @@ class Registration
     /**
      * @return string
      */
+    // TODO add more robust counter functionality
     public function getCounter()
     {
         return $this->counter;

@@ -49,7 +49,7 @@ class U2FServer
      * RegisterRequest the second being an array of SignRequest
      * @throws U2FException
      */
-    public static function makeRegistration($appId, array $registrations = array())
+    public static function makeRegistration($appId, array $registrations = [])
     {
         $request = new RegistrationRequest(static::createChallenge(), $appId);
         $signatures = static::makeAuthentication($registrations, $appId);
@@ -68,29 +68,12 @@ class U2FServer
      * @param bool $includeCert set to true if the attestation certificate should be
      * included in the returned Registration object
      * @return Registration
+     * @throws InvalidArgumentException
      * @throws U2FException
      */
     public static function register(RegistrationRequest $request, $response, $attestDir = null, $includeCert = true)
     {
-        // Parameter Checks
-        if( !is_object( $request ) ) {
-            throw new InvalidArgumentException('$request of register() method only accepts object.');
-        }
-
-        if( !is_object( $response ) ) {
-            throw new InvalidArgumentException('$response of register() method only accepts object.');
-        }
-
-        if( property_exists( $response, 'errorCode') && $response->errorCode !== 0 ) {
-            throw new U2FException(
-                'User-agent returned error. Error code: ' . $response->errorCode,
-                U2FException::BAD_UA_RETURNING
-            );
-        }
-
-        if( !is_bool( $includeCert ) ) {
-            throw new InvalidArgumentException('$include_cert of register() method only accepts boolean.');
-        }
+        static::registerValidation($request, $response, $includeCert);
 
         // Unpack the registration data coming from the client-side token
         $rawRegistration = static::base64u_decode($response->registrationData);
@@ -180,6 +163,40 @@ class U2FServer
                 'Attestation signature does not match',
                 U2FException::ATTESTATION_SIGNATURE
             );
+        }
+    }
+
+
+    /**
+     * Called to validate incoming register data
+     *
+     * @param RegistrationRequest $request this is a reply to
+     * @param object $response response from a user
+     * @param bool $includeCert set to true if the attestation certificate should be
+     * included in the returned Registration object
+     * @throws InvalidArgumentException
+     * @throws U2FException
+     */
+    protected static function registerValidation(RegistrationRequest $request, $response, $includeCert)
+    {
+        // Parameter Checks
+        if( !is_object( $request ) ) {
+            throw new InvalidArgumentException('$request of register() method only accepts object.');
+        }
+
+        if( !is_object( $response ) ) {
+            throw new InvalidArgumentException('$response of register() method only accepts object.');
+        }
+
+        if( property_exists( $response, 'errorCode') && $response->errorCode !== 0 ) {
+            throw new U2FException(
+                'User-agent returned error. Error code: ' . $response->errorCode,
+                U2FException::BAD_UA_RETURNING
+            );
+        }
+
+        if( !is_bool( $includeCert ) ) {
+            throw new InvalidArgumentException('$include_cert of register() method only accepts boolean.');
         }
     }
 
