@@ -397,9 +397,11 @@ class U2FServer
          *    OID1.2.840.10045.3.1.7 (secp256r1)    06 08 2a 86 48 ce 3d 03 01 07
          *   BIT STRING(520 bit)                    03 42 ..key..
          */
-        $der  = "\x30\x59\x30\x13\x06\x07\x2a\x86\x48\xce\x3d\x02\x01";
-        $der .= "\x06\x08\x2a\x86\x48\xce\x3d\x03\x01\x07\x03\x42";
-        $der .= "\0".$key;
+        $der  = "\x30\x59";
+        $der .= "\x30\x13";
+        $der .= "\x06\x07\x2a\x86\x48\xce\x3d\x02\x01";
+        $der .= "\x06\x08\x2a\x86\x48\xce\x3d\x03\x01\x07";
+        $der .= "\x03\x42\0".$key;
 
         $pem  = "-----BEGIN PUBLIC KEY-----\r\n";
         $pem .= chunk_split(base64_encode($der), 64);
