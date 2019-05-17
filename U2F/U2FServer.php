@@ -1,6 +1,9 @@
 <?php
 namespace SAFETECHio\FIDO2\U2F;
 
+use \InvalidArgumentException;
+use \stdClass;
+
 
 class U2FServer
 {
@@ -71,11 +74,11 @@ class U2FServer
     {
         // Parameter Checks
         if( !is_object( $request ) ) {
-            throw new \InvalidArgumentException('$request of register() method only accepts object.');
+            throw new InvalidArgumentException('$request of register() method only accepts object.');
         }
 
         if( !is_object( $response ) ) {
-            throw new \InvalidArgumentException('$response of register() method only accepts object.');
+            throw new InvalidArgumentException('$response of register() method only accepts object.');
         }
 
         if( property_exists( $response, 'errorCode') && $response->errorCode !== 0 ) {
@@ -86,7 +89,7 @@ class U2FServer
         }
 
         if( !is_bool( $includeCert ) ) {
-            throw new \InvalidArgumentException('$include_cert of register() method only accepts boolean.');
+            throw new InvalidArgumentException('$include_cert of register() method only accepts boolean.');
         }
 
         // Unpack the registration data coming from the client-side token
@@ -186,14 +189,15 @@ class U2FServer
      * @param array $registrations An array of the registrations to create authentication requests for.
      * @param string $appId Application id for the running application, Basically the app's URL
      * @return array An array of SignRequest
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws U2FException
      */
     public static function makeAuthentication(array $registrations, $appId)
     {
         $signatures = [];
         foreach ($registrations as $reg) {
             if( !is_object( $reg ) ) {
-                throw new \InvalidArgumentException('$registrations of makeAuthentication() method only accepts array of object.');
+                throw new InvalidArgumentException('$registrations of makeAuthentication() method only accepts array of object.');
             }
 
             $signatures[] = new SignRequest([
@@ -211,7 +215,7 @@ class U2FServer
      * @param array $requests An array of outstanding authentication requests
      * @param array <Registration> $registrations An array of current registrations
      * @param object $response A response from the authenticator
-     * @return \stdClass
+     * @return stdClass
      * @throws U2FException
      *
      * The Registration object returned on success contains an updated counter
@@ -223,7 +227,7 @@ class U2FServer
     {
         // Parameter checks
         if( !is_object( $response ) ) {
-            throw new \InvalidArgumentException('$response of authenticate() method only accepts object.');
+            throw new InvalidArgumentException('$response of authenticate() method only accepts object.');
         }
 
         if( property_exists( $response, 'errorCode') && $response->errorCode !== 0 ) {
@@ -247,7 +251,7 @@ class U2FServer
         // Check we have a match among the requests and the response
         foreach ($requests as $req) {
             if( !is_object( $req ) ) {
-                throw new \InvalidArgumentException('$requests of authenticate() method only accepts an array of objects.');
+                throw new InvalidArgumentException('$requests of authenticate() method only accepts an array of objects.');
             }
 
             if($req->keyHandle() === $response->keyHandle && $req->challenge() === $decodedClient->challenge) {
@@ -266,7 +270,7 @@ class U2FServer
         // Check for a match for the response among a list of registrations
         foreach ($registrations as $reg) {
             if( !is_object( $reg ) ) {
-                throw new \InvalidArgumentException('$registrations of authenticate() method only accepts an array of objects.');
+                throw new InvalidArgumentException('$registrations of authenticate() method only accepts an array of objects.');
             }
 
             if($reg->keyHandle === $response->keyHandle) {
