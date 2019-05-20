@@ -3,6 +3,7 @@ namespace SAFETECHio\FIDO2\U2F;
 
 use \InvalidArgumentException;
 use SAFETECHio\FIDO2\Certificates\Certificate;
+use SAFETECHio\FIDO2\PublicKeys\PublicKey;
 use SAFETECHio\FIDO2\Tools\Tools;
 use \stdClass;
 
@@ -11,9 +12,6 @@ class U2FServer
 {
     /** Constant for the version of the u2f protocol */
     const VERSION = "U2F_V2";
-
-    /** @internal */
-    const PUBKEY_LEN = 65;
 
     /**
      * @throws U2FException If OpenSSL older than 1.0.0 is used
@@ -43,7 +41,7 @@ class U2FServer
      */
     public static function makeRegistration($appId, array $registrations = [])
     {
-        $request = new RegistrationRequest(static::createChallenge(), $appId);
+        $request = new RegistrationRequest(Tools::createChallenge(), $appId);
         $signatures = static::makeAuthentication($registrations, $appId);
         return [
             "request" => $request,
@@ -84,11 +82,11 @@ class U2FServer
         // Begin validating and building the registration
         $registration = new Registration();
         $offset = 1;
-        $pubKey = substr($rawRegistration, $offset, static::PUBKEY_LEN);
-        $offset += static::PUBKEY_LEN;
+        $pubKey = PublicKey::fromRegistration($rawRegistration, $offset);
+        $offset += PublicKey::PUBKEY_LEN;
 
         // Validate and set the public key
-        if(static::publicKeyToPem($pubKey) === null) {
+        if($pubKey->ToPEM() === null) {
             throw new U2FException(
                 'Decoding of public key failed',
                 U2FException::PUBKEY_DECODE
@@ -207,7 +205,7 @@ class U2FServer
             $signatures[] = new SignRequest([
                 'appId' => $appId,
                 'keyHandle' => $reg->keyHandle,
-                'challenge' => static::createChallenge(),
+                'challenge' => Tools::createChallenge(),
             ]);
         }
         return $signatures;
@@ -253,12 +251,13 @@ class U2FServer
         $decodedClient = json_decode($clientData);
 
         // Check we have a match among the requests and the response
-        foreach ($requests as $req) {
-            if( !is_object( $req ) ) {
+        foreach ($requests as $request) {
+            if( !is_object( $request ) ) {
                 throw new InvalidArgumentException('$requests of authenticate() method only accepts an array of objects.');
             }
 
-            if($req->keyHandle() === $response->keyHandle && $req->challenge() === $decodedClient->challenge) {
+            if($request->keyHandle() === $response->keyHandle && $request->challenge() === $decodedClient->challenge) {
+                $req = $request;
                 break;
             }
 
@@ -272,12 +271,13 @@ class U2FServer
         }
 
         // Check for a match for the response among a list of registrations
-        foreach ($registrations as $reg) {
-            if( !is_object( $reg ) ) {
+        foreach ($registrations as $registration) {
+            if( !is_object( $registration ) ) {
                 throw new InvalidArgumentException('$registrations of authenticate() method only accepts an array of objects.');
             }
 
-            if($reg->keyHandle === $response->keyHandle) {
+            if($registration->keyHandle === $response->keyHandle) {
+                $reg = $registration;
                 break;
             }
             $reg = null;
@@ -290,7 +290,8 @@ class U2FServer
         }
 
         // On Success, check we have a valid public key
-        $pemKey = static::publicKeyToPem(Tools::base64u_decode($reg->publicKey));
+        $publicKey = PublicKey::fromString(Tools::base64u_decode($reg->publicKey));
+        $pemKey = $publicKey->toPEM();
         if($pemKey === null) {
             throw new U2FException(
                 'Decoding of public key failed',
@@ -307,8 +308,7 @@ class U2FServer
 
         // Verify the response data against the public key
         if(openssl_verify($dataToVerify, $signature, $pemKey, 'sha256') === 1) {
-            $ctr = unpack("Nctr", substr($signData, 1, 4));
-            $counter = $ctr['ctr'];
+            $counter = unpack("Nctr", substr($signData, 1, 4))['ctr'];
             /* TODO: wrap-around should be handled somehow.. */
             if($counter > $reg->counter) {
                 $reg->counter = $counter;
@@ -326,57 +326,4 @@ class U2FServer
             );
         }
     }
-
-    /**
-     * @param string $key
-     * @return null|string
-     */
-    private static function publicKeyToPem($key)
-    {
-        if(strlen($key) !== static::PUBKEY_LEN || $key[0] !== "\x04") {
-            return null;
-        }
-
-        /*
-         * Convert the public key to binary DER format first
-         * Using the ECC SubjectPublicKeyInfo OIDs from RFC 5480
-         *
-         *  SEQUENCE(2 elem)                        30 59
-         *   SEQUENCE(2 elem)                       30 13
-         *    OID1.2.840.10045.2.1 (id-ecPublicKey) 06 07 2a 86 48 ce 3d 02 01
-         *    OID1.2.840.10045.3.1.7 (secp256r1)    06 08 2a 86 48 ce 3d 03 01 07
-         *   BIT STRING(520 bit)                    03 42 ..key..
-         */
-        $der  = "\x30\x59";
-        $der .= "\x30\x13";
-        $der .= "\x06\x07\x2a\x86\x48\xce\x3d\x02\x01";
-        $der .= "\x06\x08\x2a\x86\x48\xce\x3d\x03\x01\x07";
-        $der .= "\x03\x42\0".$key;
-
-        $pem  = "-----BEGIN PUBLIC KEY-----\r\n";
-        $pem .= chunk_split(base64_encode($der), 64);
-        $pem .= "-----END PUBLIC KEY-----";
-
-        return $pem;
-    }
-
-    /**
-     * @return string
-     * @throws U2FException
-     */
-    private static function createChallenge()
-    {
-        $challenge = openssl_random_pseudo_bytes(32, $crypto_strong );
-        if( $crypto_strong !== true ) {
-            throw new U2FException(
-                'Unable to obtain a good source of randomness',
-                U2FException::BAD_RANDOM
-            );
-        }
-
-        $challenge = Tools::base64u_encode( $challenge );
-
-        return $challenge;
-    }
-
 }
