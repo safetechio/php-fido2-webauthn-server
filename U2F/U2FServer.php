@@ -2,6 +2,8 @@
 namespace SAFETECHio\FIDO2\U2F;
 
 use \InvalidArgumentException;
+use SAFETECHio\FIDO2\Certificates\Certificate;
+use SAFETECHio\FIDO2\Tools\Tools;
 use \stdClass;
 
 
@@ -12,16 +14,6 @@ class U2FServer
 
     /** @internal */
     const PUBKEY_LEN = 65;
-
-    /** @internal */
-    private static $FIXCERTS = [
-        '349bca1031f8c82c4ceca38b9cebf1a69df9fb3b94eed99eb3fb9aa3822d26e8',
-        'dd574527df608e47ae45fbba75a2afdd5c20fd94a02419381813cd55a2a3398f',
-        '1d8764f0f7cd1352df6150045c8f638e517270e8b5dda1c63ade9c2280240cae',
-        'd0edc9a91a1677435a953390865d208c55b3183c6759c9b5a7ff494c322558eb',
-        '6073c436dcd064a48127ddbf6032ac1a66fd59a0c24434f070d4e564c124c897',
-        'ca993121846c464d666096d35f13bf44c1b05af205f9b4a1e00cf6cc10c5e511'
-    ];
 
     /**
      * @throws U2FException If OpenSSL older than 1.0.0 is used
@@ -76,9 +68,9 @@ class U2FServer
         static::registerValidation($request, $response, $includeCert);
 
         // Unpack the registration data coming from the client-side token
-        $rawRegistration = static::base64u_decode($response->registrationData);
+        $rawRegistration = Tools::base64u_decode($response->registrationData);
         $registrationData = array_values(unpack('C*', $rawRegistration));
-        $clientData = static::base64u_decode($response->clientData);
+        $clientData = Tools::base64u_decode($response->clientData);
         $clientToken = json_decode($clientData);
 
         // Check Client's challenge matches the original request's challenge
@@ -108,7 +100,7 @@ class U2FServer
         $keyHandleLength = $registrationData[$offset++];
         $keyHandle = substr($rawRegistration, $offset, $keyHandleLength);
         $offset += $keyHandleLength;
-        $registration->keyHandle = static::base64u_encode($keyHandle);
+        $registration->keyHandle = Tools::base64u_encode($keyHandle);
 
         // Build certificate
         // Set certificate length
@@ -118,18 +110,14 @@ class U2FServer
         $certLength += $registrationData[$offset + 3];
 
         // Write the certificate from the returning registration data
-        $rawCert = static::fixSignatureUnusedBits(substr($rawRegistration, $offset, $certLength));
-        $offset += $certLength;
-        $pemCert  = "-----BEGIN CERTIFICATE-----\r\n";
-        $pemCert .= chunk_split(base64_encode($rawCert), 64);
-        $pemCert .= "-----END CERTIFICATE-----";
+        $cert = new Certificate($rawRegistration, $offset, $certLength);
         if($includeCert) {
-            $registration->certificate = base64_encode($rawCert);
+            $registration->certificate = base64_encode($cert->DER());
         }
 
         // If we've set the attestDir, check the given certificate can be used.
         if($attestDir) {
-            if(openssl_x509_checkpurpose($pemCert, -1, static::get_certs($attestDir)) !== true) {
+            if(openssl_x509_checkpurpose($cert->PEM(), -1, Certificate::getCerts($attestDir)) !== true) {
                 throw new U2FException(
                     'Attestation certificate can not be validated',
                     U2FException::ATTESTATION_VERIFICATION
@@ -138,7 +126,7 @@ class U2FServer
         }
 
         // Attempt to extract public key from the certificate, if we can't something went wrong in making it.
-        if(!openssl_pkey_get_public($pemCert)) {
+        if(!openssl_pkey_get_public($cert->PEM())) {
             throw new U2FException(
                 'Decoding of public key failed',
                 U2FException::PUBKEY_DECODE
@@ -150,13 +138,13 @@ class U2FServer
 
         // Build a verification string from the components we've made in this function
         $dataToVerify  = chr(0);
-        $dataToVerify .= static::SHA256($request->appId(), true);
-        $dataToVerify .= static::SHA256($clientData, true);
+        $dataToVerify .= Tools::SHA256($request->appId(), true);
+        $dataToVerify .= Tools::SHA256($clientData, true);
         $dataToVerify .= $keyHandle;
         $dataToVerify .= $pubKey;
 
         // Verify our data against the signature and the certificate, on success return the registration object
-        if(openssl_verify($dataToVerify, $signature, $pemCert, 'sha256') === 1) {
+        if(openssl_verify($dataToVerify, $signature, $cert->PEM(), 'sha256') === 1) {
             return $registration;
         } else {
             throw new U2FException(
@@ -165,7 +153,6 @@ class U2FServer
             );
         }
     }
-
 
     /**
      * Called to validate incoming register data
@@ -262,7 +249,7 @@ class U2FServer
         $reg = null;
 
         // Extract client response data
-        $clientData = static::base64u_decode($response->clientData);
+        $clientData = Tools::base64u_decode($response->clientData);
         $decodedClient = json_decode($clientData);
 
         // Check we have a match among the requests and the response
@@ -303,7 +290,7 @@ class U2FServer
         }
 
         // On Success, check we have a valid public key
-        $pemKey = static::publicKeyToPem(static::base64u_decode($reg->publicKey));
+        $pemKey = static::publicKeyToPem(Tools::base64u_decode($reg->publicKey));
         if($pemKey === null) {
             throw new U2FException(
                 'Decoding of public key failed',
@@ -312,10 +299,10 @@ class U2FServer
         }
 
         // Build signature and data from response
-        $signData = static::base64u_decode($response->signatureData);
-        $dataToVerify  = static::SHA256($req->appId(), true);
+        $signData = Tools::base64u_decode($response->signatureData);
+        $dataToVerify  = Tools::SHA256($req->appId(), true);
         $dataToVerify .= substr($signData, 0, 5);
-        $dataToVerify .= static::SHA256($clientData, true);
+        $dataToVerify .= Tools::SHA256($clientData, true);
         $signature = substr($signData, 5);
 
         // Verify the response data against the public key
@@ -338,53 +325,6 @@ class U2FServer
                 U2FException::AUTHENTICATION_FAILURE
             );
         }
-    }
-
-    /**
-     * @param string $attestDir
-     * @return array
-     */
-    private static function get_certs($attestDir)
-    {
-        $files = [];
-        $dir = $attestDir;
-        if($dir && $handle = opendir($dir)) {
-            while(false !== ($entry = readdir($handle))) {
-                if(is_file("$dir/$entry")) {
-                    $files[] = "$dir/$entry";
-                }
-            }
-            closedir($handle);
-        }
-        return $files;
-    }
-
-    /**
-     * @param string $data
-     * @return string
-     */
-    private static function base64u_encode($data)
-    {
-        return trim(strtr(base64_encode($data), '+/', '-_'), '=');
-    }
-
-    /**
-     * @param string $data
-     * @return string
-     */
-    private static function base64u_decode($data)
-    {
-        return base64_decode(strtr($data, '-_', '+/'));
-    }
-
-    /**
-     * @param $input
-     * @param $rawOutput
-     * @return string
-     */
-    protected static function SHA256($input, $rawOutput = false)
-    {
-        return hash('sha256', $input, $rawOutput);
     }
 
     /**
@@ -434,23 +374,9 @@ class U2FServer
             );
         }
 
-        $challenge = static::base64u_encode( $challenge );
+        $challenge = Tools::base64u_encode( $challenge );
 
         return $challenge;
-    }
-
-    /**
-     * Fixes a certificate where the signature contains unused bits.
-     *
-     * @param string $cert
-     * @return mixed
-     */
-    private static function fixSignatureUnusedBits($cert)
-    {
-        if(in_array(static::SHA256($cert), static::$FIXCERTS)) {
-            $cert[strlen($cert) - 257] = "\0";
-        }
-        return $cert;
     }
 
 }
