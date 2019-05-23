@@ -6,14 +6,15 @@
 
 ```php
 <?php
+// Initialise
 
 use SAFETECHio\FIDO2\WebAuthn;
 
 $WebAConfig = new WebAuthn\WebAuthnConfig(
     "Example Name",
     "example.com",
-    "https://login.example.com",
-    "https://example.com/images/logo.png"
+    "https://login.example.com",          // Optional
+    "https://example.com/images/logo.png" // Optional
 ); 
 $WebA = new WebAuthn\WebAuthnServer($WebAConfig);
 ```
