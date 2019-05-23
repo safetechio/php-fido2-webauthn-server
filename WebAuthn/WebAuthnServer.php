@@ -16,23 +16,23 @@ class WebAuthnServer
         $this->config = $config;
     }
 
-    public function beginRegistration()
+    public function beginRegistration($user)
     {
-
+        return [];
     }
 
-    public function completeRegistration()
+    public function completeRegistration($user, $sessionData)
     {
-
+        return "";
     }
 
-    public function beginAuthentication()
+    public function beginAuthentication($user)
     {
-
+        return [];
     }
 
-    public function completeAuthentication()
+    public function completeAuthentication($user, $sessionData)
     {
-
+        return "";
     }
 }
