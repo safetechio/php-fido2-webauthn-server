@@ -2,15 +2,8 @@
 
 namespace SAFETECHio\FIDO2\WebAuthn;
 
-use SAFETECHio\FIDO2\Tools\Tools;
+use SAFETECHio\FIDO2\Exceptions\ToolException;
 use SAFETECHio\FIDO2\WebAuthn\Contracts\User;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Authenticator\UserVerificationRequirement;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Entities\RelyingPartyEntity;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Entities\UserEntity;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\AuthenticatorSelection;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\ConveyancePreference;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\CredentialParameter;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\PublicKeyCredentialCreationOptions;
 
 class WebAuthnServer
 {
@@ -27,35 +20,13 @@ class WebAuthnServer
     }
 
     /**
-     * @param $user
-     * @return array
-     * @throws \SAFETECHio\FIDO2\Exceptions\ToolException
+     * @param User $user
+     * @return WebAuthnBeginRegistration
+     * @throws ToolException
      */
-    public function beginRegistration(User $user)
+    public function BeginRegistration(User $user)
     {
-        $challenge = Tools::createChallenge();
-
-        $webAuthnUser = UserEntity::FromUser($user);
-
-        $relyingParty = RelyingPartyEntity::FromConfig($this->config);
-
-        $credentialParams = CredentialParameter::all();
-
-        $authSelection = new AuthenticatorSelection(
-            false,
-            UserVerificationRequirement::VerificationPreferred
-        );
-
-        $creationOptions = new PublicKeyCredentialCreationOptions();
-        $creationOptions->Challenge = $challenge;
-        $creationOptions->RelyingParty = $relyingParty;
-        $creationOptions->User = $webAuthnUser;
-        $creationOptions->Parameters = $credentialParams;
-        $creationOptions->AuthenticatorSelection = $authSelection;
-        $creationOptions->Timeout = $this->config->Timeout;
-        $creationOptions->Attestation = ConveyancePreference::PreferDirectAttestation; // The Default is `none`
-
-        return [];
+        return new WebAuthnBeginRegistration($user, $this->config);
     }
 
     public function completeRegistration(User $user, $sessionData)

@@ -33,7 +33,7 @@ use SAFETECHio\FIDO2\WebAuthn;
 $user = DB\User::FindOrCreate();  
 
 /** @var $WebA WebAuthn\WebAuthnServer */
-list($options, $sessionData) = $WebA->beginRegistration($user);
+list($options, $sessionData) = $WebA->BeginRegistration($user)->Make();
 
 // sessionData should be saved in the registration session
 session_start();
@@ -120,4 +120,11 @@ unset($_SESSION['authentication_session']);
 
 // Respond with a success message
 echo json_encode("Registration Success");
+```
+
+## TODOs
+
+```text
+// TODO give examples of how to change the default parameters for registration
+//  eg $WebA->BeginRegistration($user)->WithExclusions($exclusions)->Make();
 ```
