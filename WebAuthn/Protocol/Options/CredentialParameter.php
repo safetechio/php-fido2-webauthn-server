@@ -32,6 +32,7 @@ class CredentialParameter
             new static(COSE::AlgES256),
             new static(COSE::AlgES384),
             new static(COSE::AlgES512),
+            new static(COSE::AlgRS1),
             new static(COSE::AlgRS256),
             new static(COSE::AlgRS384),
             new static(COSE::AlgRS512),
