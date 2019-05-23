@@ -64,7 +64,7 @@ $sessionData = $_SESSION['registration_session'];
 $credential = $WebA->completeRegistration($user, $sessionData);
 
 // If creation was successful, store the credential object
-DB\Credential::Create($credential);
+$user->Credentials()->Create($credential);
 
 // Destroy the registration session
 unset($_SESSION['registration_session']);
