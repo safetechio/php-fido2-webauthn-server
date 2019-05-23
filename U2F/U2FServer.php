@@ -3,6 +3,8 @@ namespace SAFETECHio\FIDO2\U2F;
 
 use \InvalidArgumentException;
 use SAFETECHio\FIDO2\Certificates\Certificate;
+use SAFETECHio\FIDO2\Exceptions\ToolException;
+use SAFETECHio\FIDO2\Exceptions\U2FException;
 use SAFETECHio\FIDO2\PublicKeys\PublicKey;
 use SAFETECHio\FIDO2\Tools\Tools;
 use \stdClass;
@@ -37,7 +39,7 @@ class U2FServer
      * times.
      * @return array An array of two elements, the first containing a
      * RegisterRequest the second being an array of SignRequest
-     * @throws U2FException
+     * @throws ToolException | U2FException
      */
     public static function makeRegistration($appId, array $registrations = [])
     {
@@ -192,7 +194,7 @@ class U2FServer
      * @param string $appId Application id for the running application, Basically the app's URL
      * @return array An array of SignRequest
      * @throws InvalidArgumentException
-     * @throws U2FException
+     * @throws ToolException
      */
     public static function makeAuthentication(array $registrations, $appId)
     {

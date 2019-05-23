@@ -28,6 +28,7 @@ interface User {
      */
     public function WebAuthnIcon(): string;
 
+    // TODO define Credential class
     /**
      * User's stored Credentials
      * @return Credential[]

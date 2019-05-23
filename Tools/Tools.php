@@ -2,7 +2,7 @@
 
 namespace SAFETECHio\FIDO2\Tools;
 
-use SAFETECHio\FIDO2\U2F\U2FException;
+use SAFETECHio\FIDO2\Exceptions\ToolException;
 
 class Tools {
 
@@ -36,15 +36,15 @@ class Tools {
 
     /**
      * @return string
-     * @throws U2FException
+     * @throws ToolException
      */
     public static function createChallenge()
     {
         $challenge = openssl_random_pseudo_bytes(32, $crypto_strong );
         if( $crypto_strong !== true ) {
-            throw new U2FException(
+            throw new ToolException(
                 'Unable to obtain a good source of randomness',
-                U2FException::BAD_RANDOM
+                ToolException::BAD_RANDOM
             );
         }
 

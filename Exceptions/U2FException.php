@@ -1,10 +1,8 @@
 <?php
-namespace SAFETECHio\FIDO2\U2F;
 
-use Exception;
+namespace SAFETECHio\FIDO2\Exceptions;
 
-
-class U2FException extends Exception
+class U2FException extends FIDO2Exception
 {
     /** Error for the authentication message not matching any outstanding
      * authentication request */
@@ -28,28 +26,15 @@ class U2FException extends Exception
     /** Error for the attestation verification not verifying */
     const ATTESTATION_VERIFICATION = 6;
 
-    /** Error for not getting good random from the system */
-    const BAD_RANDOM = 7;
-
     /** Error when the counter is lower than expected */
-    const COUNTER_TOO_LOW = 8;
+    const COUNTER_TOO_LOW = 7;
 
     /** Error decoding public key */
-    const PUBKEY_DECODE = 9;
+    const PUBKEY_DECODE = 8;
 
     /** Error user-agent returned error */
-    const BAD_UA_RETURNING = 10;
+    const BAD_UA_RETURNING = 9;
 
     /** Error old OpenSSL version */
-    const OLD_OPENSSL = 11;
-
-    /**
-     * Override constructor and make message and code mandatory
-     * @param string $message
-     * @param int $code
-     * @param Exception|null $previous
-     */
-    public function __construct($message, $code, Exception $previous = null) {
-        parent::__construct($message, $code, $previous);
-    }
+    const OLD_OPENSSL = 10;
 }

@@ -4,7 +4,6 @@ namespace SAFETECHio\FIDO2\PublicKeys;
 
 class PublicKey
 {
-    /** @internal */
     const PUBKEY_LEN = 65;
 
     protected $publicKey;
