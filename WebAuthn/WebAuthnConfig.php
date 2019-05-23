@@ -2,6 +2,8 @@
 
 namespace SAFETECHio\FIDO2\WebAuthn;
 
+use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
+
 class WebAuthnConfig
 {
     public $RPDisplayName;
