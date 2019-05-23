@@ -30,7 +30,7 @@ $WebA = new WebAuthn\WebAuthnServer($WebAConfig);
 use SAFETECHio\FIDO2\WebAuthn;
 
 // create or find the registering user from your data store
-$user = User::FindOrCreate();  
+$user = DB\User::FindOrCreate();  
 
 /** @var $WebA WebAuthn\WebAuthnServer */
 list($options, $sessionData) = $WebA->beginRegistration($user);
@@ -53,7 +53,7 @@ echo json_encode($options);
 use SAFETECHio\FIDO2\WebAuthn;
 
 // find the registering user from your data store
-$user = User::Find();  
+$user = DB\User::Find();  
 
 // Get the session data stored in the beginRegistration step
 session_start();
@@ -64,7 +64,7 @@ $sessionData = $_SESSION['registration_session'];
 $credential = $WebA->completeRegistration($user, $sessionData);
 
 // If creation was successful, store the credential object
-WebAuthn\Credential::Create($credential);
+DB\Credential::Create($credential);
 
 // Destroy the registration session
 unset($_SESSION['registration_session']);
@@ -83,7 +83,7 @@ echo json_encode("Registration Success");
 use SAFETECHio\FIDO2\WebAuthn;
 
 // find the registering user from your data store
-$user = User::Find();
+$user = DB\User::Find();
 
 /** @var $WebA WebAuthn\WebAuthnServer */
 list($options, $sessionData) = $WebA->beginAuthentication($user);
@@ -106,7 +106,7 @@ echo json_encode($options);
 use SAFETECHio\FIDO2\WebAuthn;
 
 // find the registering user from your data store
-$user = User::Find();
+$user = DB\User::Find();
 
 // Get the authentication session data stored in the beginAuthentication step
 session_start();
