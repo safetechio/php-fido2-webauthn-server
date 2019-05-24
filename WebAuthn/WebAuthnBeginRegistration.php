@@ -8,6 +8,7 @@ use SAFETECHio\FIDO2\WebAuthn\Contracts\User;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Authenticator\UserVerificationRequirement;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Entities\RelyingPartyEntity;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Entities\UserEntity;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\AuthenticationExtensionsClientInputs;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\AuthenticatorSelection;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\ConveyancePreference;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\CredentialCreation;
@@ -105,12 +106,11 @@ class WebAuthnBeginRegistration
         return $this;
     }
 
-    //TODO Write AuthenticationExtensions class
     /**
-     * @param AuthenticationExtensions $preference
+     * @param AuthenticationExtensionsClientInputs $preference
      * @return WebAuthnBeginRegistration$this
      */
-    public function WithExtensions(AuthenticationExtensions $preference)
+    public function WithExtensions(AuthenticationExtensionsClientInputs $preference)
     {
         $this->creationOptions->Extensions = $preference;
         return $this;
