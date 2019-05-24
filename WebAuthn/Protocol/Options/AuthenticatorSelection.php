@@ -63,7 +63,7 @@ class AuthenticatorSelection implements \JsonSerializable
             $json["authenticatorAttachment"] = $this->AuthenticatorAttachment;
         }
 
-        if($this->RequireResidentKey === null){
+        if($this->RequireResidentKey !== null){
             $json["requireResidentKey"] = $this->RequireResidentKey;
         }
 
