@@ -4,7 +4,7 @@ namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Options;
 
 use SAFETECHio\FIDO2\WebAuthn\Protocol\COSE\COSE;
 
-class CredentialParameter
+class CredentialParameter implements \JsonSerializable
 {
     /** @var integer $Algorithm */
     public $Algorithm;
@@ -40,6 +40,14 @@ class CredentialParameter
             new static(COSE::AlgPS384),
             new static(COSE::AlgPS512),
             new static(COSE::AlgEdDSA),
+        ];
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            "type" => $this->Type,
+            "alg" => $this->Algorithm,
         ];
     }
 }

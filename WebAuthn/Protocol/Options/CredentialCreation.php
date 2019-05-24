@@ -2,7 +2,7 @@
 
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Options;
 
-class CredentialCreation
+class CredentialCreation implements \JsonSerializable
 {
     /** @var PublicKeyCredentialCreationOptions $Response */
     protected $Response;
@@ -14,5 +14,12 @@ class CredentialCreation
     public function __construct(PublicKeyCredentialCreationOptions $creationOptions)
     {
         $this->Response = $creationOptions;
+    }
+
+    public function jsonSerialize()
+    {
+        return[
+            "publicKey" => $this->Response
+        ];
     }
 }

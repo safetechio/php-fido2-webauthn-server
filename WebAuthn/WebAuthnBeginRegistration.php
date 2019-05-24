@@ -65,8 +65,6 @@ class WebAuthnBeginRegistration
      */
     public function Make()
     {
-        // TODO ensure the output is easily JSONable
-
         $response = new CredentialCreation($this->creationOptions);
 
 	    $newSessionData = new SessionData;
@@ -87,10 +85,10 @@ class WebAuthnBeginRegistration
     }
 
     /**
-     * @param CredentialDescriptor $excludeList
+     * @param CredentialDescriptor[] $excludeList
      * @return WebAuthnBeginRegistration $this
      */
-    public function WithExclusions(CredentialDescriptor $excludeList)
+    public function WithExclusions(array $excludeList)
     {
         $this->creationOptions->CredentialExcludeList = $excludeList;
         return $this;

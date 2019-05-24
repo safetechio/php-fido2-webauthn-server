@@ -4,7 +4,7 @@ namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Entities;
 
 use SAFETECHio\FIDO2\WebAuthn\WebAuthnConfig;
 
-// See (https://www.w3.org/TR/webauthn/#sctn-rp-credential-params)
+/** See https://www.w3.org/TR/webauthn/#sctn-rp-credential-params */
 class RelyingPartyEntity extends CredentialEntity
 {
     /** @var string $ID */
@@ -22,5 +22,13 @@ class RelyingPartyEntity extends CredentialEntity
         $rp->Icon = $config->RPIcon;
 
         return $rp;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = parent::jsonSerialize();
+        $json["id"] = $this->ID;
+
+        return $json;
     }
 }

@@ -2,8 +2,8 @@
 
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Options;
 
-// see https://www.w3.org/TR/webauthn/#authenticatorSelection
-class AuthenticatorSelection
+/** see https://www.w3.org/TR/webauthn/#authenticatorSelection */
+class AuthenticatorSelection implements \JsonSerializable
 {
     /**
      * AuthenticatorAttachment
@@ -53,5 +53,24 @@ class AuthenticatorSelection
         $this->RequireResidentKey = $RequireResidentKey;
         $this->UserVerification = $UserVerification;
         $this->AuthenticatorAttachment = $AuthenticatorAttachment;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = [];
+
+        if(strlen($this->AuthenticatorAttachment) > 0){
+            $json["authenticatorAttachment"] = $this->AuthenticatorAttachment;
+        }
+
+        if($this->RequireResidentKey === null){
+            $json["requireResidentKey"] = $this->RequireResidentKey;
+        }
+
+        if(strlen($this->UserVerification) > 0){
+            $json["userVerification"] = $this->UserVerification;
+        }
+
+        return $json;
     }
 }

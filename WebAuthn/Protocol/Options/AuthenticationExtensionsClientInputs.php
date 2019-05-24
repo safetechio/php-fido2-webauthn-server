@@ -4,7 +4,8 @@ namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Options;
 
 use ArrayIterator;
 
-class AuthenticationExtensionsClientInputs
+/** See https://www.w3.org/TR/webauthn/#dictdef-authenticationextensionsclientinputs */
+class AuthenticationExtensionsClientInputs implements \Countable, \IteratorAggregate, \JsonSerializable
 {
     /** @var AuthenticationExtension[] $extensions */
     protected $extensions = [];
@@ -44,5 +45,10 @@ class AuthenticationExtensionsClientInputs
     public function count($mode = COUNT_NORMAL): int
     {
         return count($this->extensions, $mode);
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->extensions;
     }
 }
