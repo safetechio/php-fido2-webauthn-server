@@ -11,6 +11,7 @@ use SAFETECHio\FIDO2\WebAuthn\Protocol\Entities\UserEntity;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\AuthenticatorSelection;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\ConveyancePreference;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\CredentialCreation;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\CredentialDescriptor;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\CredentialParameter;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\PublicKeyCredentialCreationOptions;
 
@@ -84,7 +85,6 @@ class WebAuthnBeginRegistration
         return $this;
     }
 
-    //TODO Write CredentialDescriptor class
     /**
      * @param CredentialDescriptor $excludeList
      * @return WebAuthnBeginRegistration $this
