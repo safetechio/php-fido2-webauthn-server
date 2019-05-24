@@ -10,6 +10,7 @@ use SAFETECHio\FIDO2\WebAuthn\Protocol\Entities\RelyingPartyEntity;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Entities\UserEntity;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\AuthenticatorSelection;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\ConveyancePreference;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\CredentialCreation;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\CredentialParameter;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\PublicKeyCredentialCreationOptions;
 
@@ -62,9 +63,9 @@ class WebAuthnBeginRegistration
      */
     public function Make()
     {
-        //TODO Write CredentialCreation class
-        $response = new CredentialCreation;
-        $response->Response = $this->creationOptions;
+        // TODO ensure the output is easily JSONable
+
+        $response = new CredentialCreation($this->creationOptions);
 
         //TODO Write SessionData class
 	    $newSessionData = new SessionData;
