@@ -67,7 +67,6 @@ class WebAuthnBeginRegistration
 
         $response = new CredentialCreation($this->creationOptions);
 
-        //TODO Write SessionData class
 	    $newSessionData = new SessionData;
         $newSessionData->Challenge = Tools::base64u_encode($this->creationOptions->Challenge);
 		$newSessionData->UserID = $this->user->WebAuthnID();
