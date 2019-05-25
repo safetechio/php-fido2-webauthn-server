@@ -11,4 +11,8 @@ class WebAuthnException extends FIDO2Exception
     const RP_ID_NOT_VALID_URI = 3;
 
     const RP_ORIGIN_NOT_VALID_URL = 4;
+
+    const ID_MISMATCH = 5;
+
+    const HASH_MISMATCH = 6;
 }

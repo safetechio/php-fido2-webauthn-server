@@ -61,7 +61,7 @@ $sessionData = $_SESSION['registration_session'];
 
 // Call the WebAuthn->completeRegistration() func
 /** @var $WebA WebAuthn\WebAuthnServer */
-$credential = $WebA->completeRegistration($user, $sessionData);
+$credential = $WebA->completeRegistration($user, $sessionData, $jsonResponse);
 
 // If creation was successful, store the credential object
 $user->Credentials()->Create($credential);

@@ -3,6 +3,7 @@
 namespace SAFETECHio\FIDO2\WebAuthn;
 
 use SAFETECHio\FIDO2\Exceptions\ToolException;
+use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 use SAFETECHio\FIDO2\WebAuthn\Contracts\User;
 
 class WebAuthnServer
@@ -29,8 +30,17 @@ class WebAuthnServer
         return new WebAuthnBeginRegistration($user, $this->config);
     }
 
-    public function completeRegistration(User $user, $sessionData)
+    /**
+     * @param User $user
+     * @param SessionData $sessionData
+     * @param string $credentialCreationResponse
+     * @return string
+     * @throws WebAuthnException
+     */
+    public function completeRegistration(User $user, SessionData $sessionData, string $credentialCreationResponse)
     {
+        new WebAuthnCompleteRegistration($user, $sessionData, $credentialCreationResponse);
+
         return "";
     }
 
@@ -39,7 +49,7 @@ class WebAuthnServer
         return [];
     }
 
-    public function completeAuthentication(User $user, $sessionData)
+    public function completeAuthentication(User $user, SessionData $sessionData)
     {
         return "";
     }
