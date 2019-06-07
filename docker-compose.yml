@@ -1,0 +1,9 @@
+version: '3'
+services:
+  app:
+    container_name: fido2-app
+    build: .
+    ports:
+      - "8081:80"
+    volumes:
+      - .:/app
