@@ -128,3 +128,17 @@ echo json_encode("Registration Success");
 // TODO give examples of how to change the default parameters for registration
 //  eg $WebA->BeginRegistration($user)->WithExclusions($exclusions)->Make();
 ```
+
+## Docker
+
+To get set up with docker.
+
+```bash
+docker-composer up
+```
+
+In a separate terminal
+
+```bash
+docker exec -it fido2-app /bin/bash
+```
