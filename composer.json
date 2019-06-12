@@ -1,4 +1,7 @@
 {
+    "autoload": {
+        "psr-4": {"SAFETECHio\\FIDO2\\": "."}
+    },
     "require": {
         "2tvenom/cborencode": "^1.0"
     }
