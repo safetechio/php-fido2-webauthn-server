@@ -3,6 +3,8 @@
 namespace SAFETECHio\FIDO2\WebAuthn;
 
 use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\AuthenticatorSelection;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\ConveyancePreference;
 
 class WebAuthnConfig
 {
@@ -12,12 +14,19 @@ class WebAuthnConfig
     public $RPIcon;
     public $Timeout = 60000;
 
+    /** @var ConveyancePreference $AttestationPreference */
+    public $AttestationPreference;
+
+    /** @var AuthenticatorSelection $AuthenticatorSelection */
+    public $AuthenticatorSelection;
+
     /**
      * WebAuthnConfig constructor.
      * @param string $RPDisplayName
      * @param string $RPID
      * @param string | null $RPOrigin
      * @param string | null $RPIcon
+     * @throws WebAuthnException
      */
     public function __construct($RPDisplayName, $RPID, $RPOrigin=null, $RPIcon=null)
     {
@@ -25,6 +34,8 @@ class WebAuthnConfig
         $this->RPID = $RPID;
         $this->RPOrigin = $RPOrigin;
         $this->RPIcon = $RPIcon;
+
+        $this->validate();
     }
 
     /**

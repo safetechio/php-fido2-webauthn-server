@@ -18,7 +18,7 @@ use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\PublicKeyCredentialCreationOption
 
 class WebAuthnBeginRegistration
 {
-    /** @var WebAuthnConfig */
+    /** @var WebAuthnConfig $config */
     protected $config;
 
     /** @var User $user */
