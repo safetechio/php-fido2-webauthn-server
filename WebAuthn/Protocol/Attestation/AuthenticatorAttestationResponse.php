@@ -70,7 +70,6 @@ class AuthenticatorAttestationResponse extends AuthenticatorResponse
         $out->AttStatement = $decodedAttestationObject["attStmt"];
         $out->AuthData = AuthenticatorData::ParseRawAuthData($out->RawAuthData);
 
-        //TODO
         return $out;
     }
 }
