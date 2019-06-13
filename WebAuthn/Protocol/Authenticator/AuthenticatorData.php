@@ -2,7 +2,6 @@
 
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Authenticator;
 
-use CBOR\CBOREncoder;
 use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 
 
