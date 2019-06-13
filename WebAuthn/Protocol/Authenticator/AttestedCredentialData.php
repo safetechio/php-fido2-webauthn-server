@@ -7,13 +7,16 @@ use CBOR\CBOREncoder;
 /** See https://www.w3.org/TR/webauthn/#attested-credential-data */
 class AttestedCredentialData
 {
-    /**
+    /*
     |--------------------------------------------------------------------------
     | Attested Credential Data Constants
     |--------------------------------------------------------------------------
     |
     | These constants define where library should look to find the different
     | elements of the Attested Credential Data from the raw auth data
+    |
+    | These constants are here to prevent introducing bugs if in future this
+    | part of the code base needs to be changed.
     |
     */
 

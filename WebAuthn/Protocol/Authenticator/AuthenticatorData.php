@@ -9,13 +9,16 @@ use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 /** See https://www.w3.org/TR/webauthn/#table-authData */
 class AuthenticatorData
 {
-    /**
+    /*
     |--------------------------------------------------------------------------
     | Authenticator Data Constants
     |--------------------------------------------------------------------------
     |
     | These constants define where library should look to find the different
-    | elements of the Authenticator Data from the raw auth data
+    | elements of the Authenticator Data from the raw auth data.
+    |
+    | These constants are here to prevent introducing bugs if in future this
+    | part of the code base needs to be changed.
     |
     */
 
