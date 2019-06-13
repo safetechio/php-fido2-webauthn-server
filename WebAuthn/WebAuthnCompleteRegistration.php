@@ -44,11 +44,11 @@ class WebAuthnCompleteRegistration
     /**
      * @param string $credentialCreationJSON
      * @return string
-     * @throws WebAuthnException
+     * @throws WebAuthnException | \Exception
      */
     protected function parseCredentialCreationJSON(string $credentialCreationJSON)
     {
-        $json = json_decode($credentialCreationJSON);
+        $json = json_decode($credentialCreationJSON, true);
         // TODO some validation of the JSON
 
         // Check the raw id and the id match after they have both been decoded
@@ -74,7 +74,7 @@ class WebAuthnCompleteRegistration
         $authenticatorAttestationResponse->AttestationObject = $json["response"]["attestationObject"];
         $authenticatorAttestationResponse->ClientDataJSON = $json["response"]["clientDataJSON"];
 
-        $authenticatorAttestationResponse->Parse();
+        $parsedAttestationResponse = $authenticatorAttestationResponse->Parse();
         return "";
     }
 }
