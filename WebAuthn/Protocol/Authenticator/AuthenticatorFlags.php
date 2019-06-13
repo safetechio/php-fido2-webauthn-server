@@ -41,6 +41,14 @@ class AuthenticatorFlags
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->value;
+    }
+
+    /**
      * UserPresent returns if the UP flag was set
      * @return bool
      */
