@@ -15,4 +15,6 @@ class WebAuthnException extends FIDO2Exception
     const ID_MISMATCH = 5;
 
     const HASH_MISMATCH = 6;
+
+    const AUTHENTICATOR_DATA_TOO_SHORT = 7;
 }
