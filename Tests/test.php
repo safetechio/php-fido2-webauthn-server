@@ -29,8 +29,6 @@ var_dump($aar);
 try{
     $par = $aar->Parse();
     var_dump($par);
-
-    var_dump($par->AttestationObject->AuthData->Flags->UserPresent());
 } catch (Throwable $exception) {
     var_dump($exception);
 }
