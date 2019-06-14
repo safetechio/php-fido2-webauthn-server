@@ -127,4 +127,36 @@ class AuthenticatorData
 
         return $out;
     }
+
+    /**
+     * @param bool $verifyUser
+     * @param string $relyingPartyIDHash
+     * @throws WebAuthnException
+     */
+    public function Verify(bool $verifyUser, string $relyingPartyIDHash)
+    {
+        // Check that the RP ID Hash matches
+        if(!hash_equals($this->RPIDHash, $relyingPartyIDHash)){
+            throw new WebAuthnException(
+                "Authenticator Data Relying Party ID hash does not match. Expected $this->RPIDHash, received $relyingPartyIDHash",
+                WebAuthnException::AUTHENTICATOR_RP_ID_HASH_MISMATCH
+            );
+        }
+
+        // Check that the User present flag is set
+        if(!$this->Flags->UserPresent()) {
+            throw new WebAuthnException(
+                "User Present flag not set in authenticator data",
+                WebAuthnException::AUTHENTICATOR_USER_PRESENT_FLAG_MISSING
+            );
+        }
+
+        // Check that the User Verified flag is set if we expect the user to be verified
+        if($verifyUser && !$this->Flags->UserVerified()) {
+            throw new WebAuthnException(
+                "User Verified flag not set in authenticator data, config requires user to be verified",
+                WebAuthnException::AUTHENTICATOR_USER_VERIFIED_FLAG_MISSING
+            );
+        }
+    }
 }
