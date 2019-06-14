@@ -2,7 +2,7 @@
 
 namespace SAFETECHio\FIDO2\Tools;
 
-abstract class EnumType
+trait EnumType
 {
     /**
      * @return array
