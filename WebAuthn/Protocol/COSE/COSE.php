@@ -2,7 +2,9 @@
 
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\COSE;
 
-class COSE
+use SAFETECHio\FIDO2\Tools\EnumType;
+
+class COSE extends EnumType
 {
     // AlgES256 ECDSA with SHA-256
     const AlgES256 = -7;
