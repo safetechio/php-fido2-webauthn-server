@@ -3,20 +3,11 @@
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Client;
 
 
-class TokenBindingStatus
+use SAFETECHio\FIDO2\Tools\EnumType;
+
+class TokenBindingStatus extends EnumType
 {
     const Present = "present";
     const Supported = "supported";
     const NotSupported = "not-supported";
-
-    /**
-     * @return array
-     * @throws \ReflectionException
-     */
-    public static function All()
-    {
-        $tbs = new static;
-        $reflectionClass = new \ReflectionClass($tbs);
-        return $reflectionClass->getConstants();
-    }
 }
