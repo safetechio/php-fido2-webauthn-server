@@ -4,7 +4,6 @@ namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Credentials;
 
 
 use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
-use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\ParsedAttestationResponse;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Client\CeremonyType;
 

@@ -45,7 +45,7 @@ class AttestationObject
      * @param bool $verifyUser
      * @param string $relyingPartyID
      * @param string $ClientDataJSON
-     * @throws WebAuthnException
+     * @throws WebAuthnException | \ReflectionException
      */
     public function Verify(bool $verifyUser, string $relyingPartyID, string $ClientDataJSON)
     {
@@ -57,6 +57,14 @@ class AttestationObject
 
         // Verify the Auth Data
         $this->AuthData->Verify($verifyUser, $relyingPartyIDHash);
+
+        // Check the Format is of a know type
+        if(!in_array($this->Format, AttestationObjectFormat::All())) {
+            throw new WebAuthnException(
+                "Attestation Object Format unknown, received $this->Format",
+                WebAuthnException::ATTESTATION_FORMAT_UNKNOWN_TYPE
+            );
+        }
 
         // Check the format of the Attestation Object is "none"
         if($this->Format == AttestationObjectFormat::NONE) {
