@@ -3,7 +3,9 @@
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Credentials;
 
 
+use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\ParsedAttestationResponse;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Client\CeremonyType;
 
 class ParsedCredentialCreationData extends ParsedPublicKeyCredential
 {
@@ -34,9 +36,12 @@ class ParsedCredentialCreationData extends ParsedPublicKeyCredential
      * @param bool $verifyUser
      * @param string $relyingPartyID
      * @param string $relyingPartyOrigin
+     * @throws WebAuthnException
      */
     public function Verify(string $challenge, bool $verifyUser, string $relyingPartyID, string $relyingPartyOrigin)
     {
         // TODO
+
+        $this->Response->CollectedClientData->Verify($challenge, CeremonyType::CREATE, $relyingPartyOrigin);
     }
 }
