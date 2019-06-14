@@ -6,6 +6,7 @@ ini_set('xdebug.var_display_max_children', '256');
 ini_set('xdebug.var_display_max_data', '4096');
 
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\AuthenticatorAttestationResponse;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\ParsedAttestationResponse;
 
 
 $registrationResponseJSON = '{
@@ -21,13 +22,11 @@ $registrationResponseJSON = '{
 $registrationResponse = json_decode($registrationResponseJSON, true);
 var_dump($registrationResponse);
 
-$aar = new AuthenticatorAttestationResponse();
-$aar->AttestationObject = $registrationResponse["response"]["attestationObject"];
-$aar->ClientDataJSON = $registrationResponse["response"]["clientDataJSON"];
+$aar = new AuthenticatorAttestationResponse($registrationResponse["response"]);
 var_dump($aar);
 
 try{
-    $par = $aar->Parse();
+    $par = new ParsedAttestationResponse($aar);
     var_dump($par);
 } catch (Throwable $exception) {
     var_dump($exception);

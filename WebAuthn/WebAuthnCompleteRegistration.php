@@ -3,16 +3,16 @@
 namespace SAFETECHio\FIDO2\WebAuthn;
 
 use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
-use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Contracts\User;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\AuthenticatorAttestationResponse;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Credentials\CredentialCreationResponse;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Credentials\ParsedCredentialCreationData;
 
 class WebAuthnCompleteRegistration
 {
-    /**
-     * @var User $user
-     */
+    /** @var WebAuthnConfig $config */
+    protected $config;
+
+    /** @var User $user */
     protected $user;
 
     /** @var SessionData $sessionData */
@@ -26,10 +26,12 @@ class WebAuthnCompleteRegistration
      * @param User $user
      * @param SessionData $sessionData
      * @param string $credentialCreationJSON
+     * @param WebAuthnConfig $config
      * @throws WebAuthnException
      */
-    public function __construct(User $user, SessionData $sessionData, string $credentialCreationJSON)
+    public function __construct(User $user, SessionData $sessionData, string $credentialCreationJSON, WebAuthnConfig $config)
     {
+        // TODO move to validation function
         // Check that the user ID and session userId Match
         if($user->WebAuthnID() != $sessionData->UserID){
             throw new WebAuthnException(
@@ -37,44 +39,29 @@ class WebAuthnCompleteRegistration
                 WebAuthnException::ID_MISMATCH
             );
         }
+        // TODO validate config has $config->AuthenticatorSelection->UserVerification set
 
-        $parsedJson = $this->parseCredentialCreationJSON($credentialCreationJSON);
+        $this->user = $user;
+        $this->sessionData = $sessionData;
+        $this->credentialCreationJSON = $credentialCreationJSON;
+        $this->config = $config;
     }
 
     /**
-     * @param string $credentialCreationJSON
-     * @return string
      * @throws WebAuthnException | \Exception
      */
-    protected function parseCredentialCreationJSON(string $credentialCreationJSON)
+    public function Verify()
     {
-        $json = json_decode($credentialCreationJSON, true);
-        // TODO some validation of the JSON
+        $credentialCreationResponse = new CredentialCreationResponse($this->credentialCreationJSON);
+        $parsedCredentialCreationData = new ParsedCredentialCreationData($credentialCreationResponse);
 
-        // Check the raw id and the id match after they have both been decoded
-        $id = Tools::base64u_decode($json['id']);
-        $rawId = Tools::base64u_decode($json['rawId']);
-        if(!hash_equals($id, $rawId)){
-            throw new WebAuthnException(
-                "Hash mismatch: id and rawId should match: $id - $rawId",
-                WebAuthnException::HASH_MISMATCH
-            );
-        }
+        $verifyUser = $this->config->AuthenticatorSelection->UserVerification == "required";
 
-        $credentialCreationResponse = new CredentialCreationResponse();
-        $credentialCreationResponse->ID = $json["id"];
-        $credentialCreationResponse->Type = $json["type"];
-        $credentialCreationResponse->RawID = $json["rawId"];
-
-        if(isset($json["extensions"])){
-            $credentialCreationResponse->Extensions = $json["extensions"];
-        }
-
-        $authenticatorAttestationResponse = new AuthenticatorAttestationResponse();
-        $authenticatorAttestationResponse->AttestationObject = $json["response"]["attestationObject"];
-        $authenticatorAttestationResponse->ClientDataJSON = $json["response"]["clientDataJSON"];
-
-        $parsedAttestationResponse = $authenticatorAttestationResponse->Parse();
-        return "";
+        $parsedCredentialCreationData->Verify(
+            $this->sessionData->Challenge,
+            $verifyUser,
+            $this->config->RPID,
+            $this->config->RPOrigin
+        );
     }
 }

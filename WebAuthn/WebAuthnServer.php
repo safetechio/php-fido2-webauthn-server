@@ -39,8 +39,8 @@ class WebAuthnServer
      */
     public function completeRegistration(User $user, SessionData $sessionData, string $credentialCreationResponse)
     {
-        new WebAuthnCompleteRegistration($user, $sessionData, $credentialCreationResponse);
-
+        $completeReg = new WebAuthnCompleteRegistration($user, $sessionData, $credentialCreationResponse, $this->config);
+        $completeReg->Verify();
         return "";
     }
 

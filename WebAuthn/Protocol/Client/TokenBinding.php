@@ -10,4 +10,10 @@ class TokenBinding
 
     /** @var string $ID */
     public $ID;
+
+    public function __construct(array $tokenBindingJson)
+    {
+        $this->ID = $tokenBindingJson["id"];
+        $this->Status = $tokenBindingJson["status"];
+    }
 }

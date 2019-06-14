@@ -14,6 +14,20 @@ class ParsedCredentialCreationData extends ParsedPublicKeyCredential
     public $Raw;
 
     /**
+     * ParsedCredentialCreationData constructor.
+     * @param CredentialCreationResponse $credentialCreationResponse
+     * @throws \Exception
+     */
+    public function __construct(CredentialCreationResponse $credentialCreationResponse)
+    {
+        $this->Raw = $credentialCreationResponse;
+        $this->ID = $credentialCreationResponse->ID;
+        $this->RawID = $credentialCreationResponse->RawID;
+        $this->Type = $credentialCreationResponse->Type;
+        $this->Response = new ParsedAttestationResponse($credentialCreationResponse->AttestationResponse);
+    }
+
+    /**
      * See https://www.w3.org/TR/webauthn/#registering-a-new-credential
      *
      * @param string $challenge
@@ -23,6 +37,6 @@ class ParsedCredentialCreationData extends ParsedPublicKeyCredential
      */
     public function Verify(string $challenge, bool $verifyUser, string $relyingPartyID, string $relyingPartyOrigin)
     {
-
+        // TODO
     }
 }
