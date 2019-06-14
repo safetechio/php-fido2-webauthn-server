@@ -87,7 +87,7 @@ class CollectedClientData
             }
 
             // Check that the token binding status is a known value
-            if(!in_array($this->TokenBinding->Status, TokenBindingStatus::All())) {
+            if(!TokenBindingStatus::Has($this->TokenBinding->Status)) {
                 throw new WebAuthnException(
                     "Token Binding status has unknown value : " . $this->TokenBinding->Status,
                     WebAuthnException::CLIENT_TOKEN_BINDING_UNKNOWN_STATUS

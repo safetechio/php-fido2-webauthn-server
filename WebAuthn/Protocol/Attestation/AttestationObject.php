@@ -59,7 +59,7 @@ class AttestationObject
         $this->AuthData->Verify($verifyUser, $relyingPartyIDHash);
 
         // Check the Format is of a know type
-        if(!in_array($this->Format, AttestationObjectFormat::All())) {
+        if(!AttestationObjectFormat::Has($this->Format)) {
             throw new WebAuthnException(
                 "Attestation Object Format unknown, received $this->Format",
                 WebAuthnException::ATTESTATION_FORMAT_UNKNOWN_TYPE

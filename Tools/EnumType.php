@@ -14,4 +14,14 @@ trait EnumType
         $reflectionClass = new \ReflectionClass($tbs);
         return $reflectionClass->getConstants();
     }
+
+    /**
+     * @param string $needle
+     * @return bool
+     * @throws \ReflectionException
+     */
+    public static function Has($needle): bool
+    {
+        return in_array($needle, static::All());
+    }
 }
