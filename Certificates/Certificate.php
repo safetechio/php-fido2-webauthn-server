@@ -75,6 +75,17 @@ class Certificate
     }
 
     /**
+     * @param $certBytes
+     * @return array
+     */
+    public static function ParseCertBytes($certBytes)
+    {
+        $certBytes = static::unusedBytesFix($certBytes);
+        $pem = static::convertDERToPEM($certBytes);
+        return openssl_x509_parse($pem);
+    }
+
+    /**
      * @return array
      */
     protected static function getCertHashes()
