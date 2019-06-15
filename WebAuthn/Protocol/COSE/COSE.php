@@ -40,4 +40,18 @@ class COSE
 
     // AlgEdDSA EdDSA
     const AlgEdDSA = -8;
+
+    protected $hashToAlg = [
+        COSE::AlgES256 => "sha256",
+        COSE::AlgES384 => "sha384",
+        COSE::AlgES512 => "sha512",
+        COSE::AlgRS1 => "sha1",
+        COSE::AlgRS256 => "sha256",
+        COSE::AlgRS384 => "sha384",
+        COSE::AlgRS512 => "sha512",
+        COSE::AlgPS256 => "sha256",
+        COSE::AlgPS384 => "sha384",
+        COSE::AlgPS512 => "sha512",
+        COSE::AlgEdDSA => "sha512",
+    ];
 }
