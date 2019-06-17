@@ -1,4 +1,5 @@
 <?php
+
 namespace SAFETECHio\FIDO2\Certificates;
 
 use SAFETECHio\FIDO2\Tools\Tools;
@@ -52,7 +53,7 @@ class Certificate
      * Fixes a certificate where the signature contains unused bits.
      *
      * @param string $cert
-     * @return mixed
+     * @return string
      */
     protected static function unusedBytesFix($cert)
     {
@@ -66,8 +67,9 @@ class Certificate
      * @param $derCert
      * @return string
      */
-    protected static function convertDERToPEM($derCert)
+    public static function convertDERToPEM($derCert)
     {
+        $derCert = static::unusedBytesFix($derCert);
         $pemCert = '-----BEGIN CERTIFICATE-----'.PHP_EOL;
         $pemCert .= chunk_split(base64_encode($derCert), 64, PHP_EOL);
         $pemCert .= '-----END CERTIFICATE-----'.PHP_EOL;
@@ -80,7 +82,6 @@ class Certificate
      */
     public static function ParseCertBytes($certBytes)
     {
-        $certBytes = static::unusedBytesFix($certBytes);
         $pem = static::convertDERToPEM($certBytes);
         return openssl_x509_parse($pem);
     }
