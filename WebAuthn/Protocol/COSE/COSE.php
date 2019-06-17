@@ -41,17 +41,31 @@ class COSE
     // AlgEdDSA EdDSA
     const AlgEdDSA = -8;
 
-    protected $hashToAlg = [
-        COSE::AlgES256 => "sha256",
-        COSE::AlgES384 => "sha384",
-        COSE::AlgES512 => "sha512",
-        COSE::AlgRS1 => "sha1",
-        COSE::AlgRS256 => "sha256",
-        COSE::AlgRS384 => "sha384",
-        COSE::AlgRS512 => "sha512",
-        COSE::AlgPS256 => "sha256",
-        COSE::AlgPS384 => "sha384",
-        COSE::AlgPS512 => "sha512",
-        COSE::AlgEdDSA => "sha512",
+    protected static $hashToAlg = [
+        COSE::AlgES256 => ["sha256", OPENSSL_ALGO_SHA256],
+        COSE::AlgES384 => ["sha384", OPENSSL_ALGO_SHA384],
+        COSE::AlgES512 => ["sha512", OPENSSL_ALGO_SHA512],
+        COSE::AlgRS1   => ["sha1", OPENSSL_ALGO_SHA1],
+        COSE::AlgRS256 => ["sha256", OPENSSL_ALGO_SHA256],
+        COSE::AlgRS384 => ["sha384", OPENSSL_ALGO_SHA384],
+        COSE::AlgRS512 => ["sha512", OPENSSL_ALGO_SHA512],
+        COSE::AlgPS256 => ["sha256", OPENSSL_ALGO_SHA256],
+        COSE::AlgPS384 => ["sha384", OPENSSL_ALGO_SHA384],
+        COSE::AlgPS512 => ["sha512", OPENSSL_ALGO_SHA512],
+        COSE::AlgEdDSA => ["sha512", OPENSSL_ALGO_SHA512],
     ];
+
+    /**
+     * @param int $COSEValue
+     * @return string hash algorithm
+     */
+    public static function GetHashAlg(int $COSEValue): string
+    {
+        return static::$hashToAlg[$COSEValue][0];
+    }
+
+    public static function GetOpenSSLHashAlg(int $COSEValue): int
+    {
+        return static::$hashToAlg[$COSEValue][1];
+    }
 }
