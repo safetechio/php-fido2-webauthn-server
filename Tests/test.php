@@ -5,9 +5,11 @@ ini_set('xdebug.var_display_max_depth', '10');
 ini_set('xdebug.var_display_max_children', '256');
 ini_set('xdebug.var_display_max_data', '4096');
 
+use SAFETECHio\FIDO2\Certificates\Certificate;
+use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\AuthenticatorAttestationResponse;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\PackedAttestation;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\ParsedAttestationResponse;
-
 
 $registrationResponseJSON = '{
 	"id":"MntW5QHrnIy_AGAothSeRcYMWd1Z7MgWOEaUALWlDVPl0STqOBgNAyYb-JCSxDebIJAQAoIC64ph7JsbGe7UWg",
@@ -28,6 +30,14 @@ var_dump($aar);
 try{
     $par = new ParsedAttestationResponse($aar);
     var_dump($par);
+
+    $attestationCertificateData = (string) $par->AttestationObject->AttStatement["x5c"][0]->get_byte_string();
+    var_dump(Certificate::ParseCertBytes($attestationCertificateData));
+
+    $JSONHashRaw = Tools::SHA256(base64_decode($aar->ClientDataJSON), true);
+    var_dump($JSONHashRaw);
+
+    PackedAttestation::Verify($par->AttestationObject, $JSONHashRaw);
 } catch (Throwable $exception) {
     var_dump($exception);
 }

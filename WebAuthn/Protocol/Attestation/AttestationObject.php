@@ -7,6 +7,7 @@ use CBOR\CBOREncoder;
 use CBOR\Types\CBORByteString;
 use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 use SAFETECHio\FIDO2\Tools\Tools;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\PackedAttestation;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Authenticator\AuthenticatorData;
 
 /** See AttestationObject https://www.w3.org/TR/webauthn/#attestation-object */
@@ -44,13 +45,13 @@ class AttestationObject
     /**
      * @param bool $verifyUser
      * @param string $relyingPartyID
-     * @param string $ClientDataJSON
-     * @throws WebAuthnException | \ReflectionException
+     * @param string $RawClientData
+     * @throws WebAuthnException | \ReflectionException | \Exception
      */
-    public function Verify(bool $verifyUser, string $relyingPartyID, string $ClientDataJSON)
+    public function Verify(bool $verifyUser, string $relyingPartyID, string $RawClientData)
     {
         // Calculate the SHA256 hash of the Client Data JSON
-        $clientDataJSONHash = Tools::SHA256($ClientDataJSON);
+        $clientDataJSONHash = Tools::SHA256(base64_decode($RawClientData), true);
 
         // Calculate the SHA256 hash of the Relying Party ID
         $relyingPartyIDHash = Tools::SHA256($relyingPartyID);
@@ -58,7 +59,7 @@ class AttestationObject
         // Verify the Auth Data
         $this->AuthData->Verify($verifyUser, $relyingPartyIDHash);
 
-        // Check the Format is of a know type
+        // Check the Format is of a known type
         if(!AttestationObjectFormat::Has($this->Format)) {
             throw new WebAuthnException(
                 "Attestation Object Format unknown, received $this->Format",
@@ -81,6 +82,13 @@ class AttestationObject
             return;
         }
 
-        // TODO add attestation format handling
+        // TODO add additional attestation format handling
+        switch ($this->Format){
+            case AttestationObjectFormat::PACKED:
+                PackedAttestation::Verify($this, $clientDataJSONHash);
+                break;
+            default:
+                throw new \Exception("Attestation format not yet supported : " . $this->Format);
+        }
     }
 }

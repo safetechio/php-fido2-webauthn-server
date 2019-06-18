@@ -119,7 +119,6 @@ class PackedAttestation implements AttestationFormatHandler
         $signatureHashAlg = COSE::GetOpenSSLHashAlg($attestationObject->AttStatement["alg"]);
 
         $verifyResult = openssl_verify($signatureData, $attestationObject->AttStatement["sig"]->get_byte_string(), $attestationCert, $signatureHashAlg);
-        var_dump($verifyResult);
         if($verifyResult !== 1){
             throw new WebAuthnException(
                 "Attestation signature verify failed for packed format",
