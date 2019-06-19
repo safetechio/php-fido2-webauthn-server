@@ -3,6 +3,7 @@
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers;
 
 
+use CBOR\CBOREncoder;
 use CBOR\Types\CBORByteString;
 use FreeDSx\Asn1\Encoders;
 use FreeDSx\Asn1\Exception\EncoderException;
@@ -12,6 +13,7 @@ use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\AttestationObject;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\AttestationObjectFormat;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\COSE\COSE;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\COSE\PublicKeyFactory;
 
 
 /**
@@ -47,6 +49,7 @@ class PackedAttestation implements AttestationFormatHandler
      * @throws WebAuthnException
      * @throws EncoderException
      * @throws PartialPduException
+     * @throws \Exception
      */
     public static function Verify(AttestationObject $attestationObject, string $clientDataHash)
     {
@@ -66,12 +69,17 @@ class PackedAttestation implements AttestationFormatHandler
             );
         }
 
-        // Check x5c is set
-        if(isset($attestationObject->AttStatement["x5c"])) {
-            static::handleCertificateAttestation($attestationObject, $clientDataHash);
+        // Check x5c is set, if so handle Certificate Attestation
+        if(isset($attestationObject->AttStatement["x5c"]) and false) { //TODO remove "and false" after finished self attestation
+            return static::handleCertificateAttestation($attestationObject, $clientDataHash);
         }
 
-        // TODO add other packed type attestation verification processes
+        // Check ecdaaKeyId is set, if so handle ECDAA Attestation.
+        if(isset($attestationObject->AttStatement["ecdaaKeyId"]) and false){ //TODO remove "and false" after finished self attestation
+            return static::handleECDAAAttestation($attestationObject, $clientDataHash);
+        }
+
+        return static::handleSelfAttestation($attestationObject, $clientDataHash);
     }
 
     /**
@@ -245,6 +253,51 @@ class PackedAttestation implements AttestationFormatHandler
             throw new WebAuthnException(
                 "Attestation certificate extensions basicConstraints should be 'CA:FALSE', received : '".$parsedCert['extensions']['basicConstraints']."' for packed format",
                 WebAuthnException::ATTESTATION_CERTIFICATE_INVALID
+            );
+        }
+
+    }
+
+    /**
+     * @param AttestationObject $attestationObject
+     * @param string $clientDataHash
+     * @throws WebAuthnException
+     */
+    protected static function handleECDAAAttestation(AttestationObject $attestationObject, string $clientDataHash)
+    {
+        // At the moment the specification does not support ECDAA Attestation.
+        throw new WebAuthnException(
+            "ECDAA Attestation is not yet supported by the WebAuthn spec",
+            WebAuthnException::ATTESTATION_TYPE_NOT_SUPPORTED
+        );
+    }
+
+    /**
+     * @param AttestationObject $attestationObject
+     * @param string $clientDataHash
+     * @throws \Exception
+     */
+    protected static function handleSelfAttestation(AttestationObject $attestationObject, string $clientDataHash)
+    {
+        /** @var CBORByteString $sig */
+        $sig = $attestationObject->AttStatement["sig"];
+
+        $publicKey = PublicKeyFactory::Make($attestationObject->AuthData->AttData->CredentialPublicKey);
+        $signatureData = $attestationObject->RawAuthData . $clientDataHash;
+
+        if($publicKey->Algorithm !== $attestationObject->AttStatement["alg"]){
+            throw new WebAuthnException(
+                "Algorithm type mismatch. ".
+                "Public Key alg : '".$publicKey->Algorithm."' . ".
+                "Attestation Statement alg : '". $attestationObject->AttStatement["alg"] ."'",
+                WebAuthnException::ATTESTATION_ALGORITHM_MISMATCH
+            );
+        }
+
+        if(!$publicKey->Verify($signatureData, $sig->get_byte_string())){
+            throw new WebAuthnException(
+                "Signature did not verify for self attested packed format",
+                WebAuthnException::ATTESTATION_SIGNATURE_INVALID
             );
         }
 
