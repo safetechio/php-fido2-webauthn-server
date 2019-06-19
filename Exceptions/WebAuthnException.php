@@ -57,4 +57,6 @@ class WebAuthnException extends FIDO2Exception
     const ATTESTATION_STATEMENT_X5C_INVALID_TIME = 26;
 
     const ATTESTATION_VERIFY_FAIL = 27;
+
+    const ATTESTATION_CERTIFICATE_INVALID = 28;
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c42406a3a60098aab5357e0f5f1b6e74",
+    "content-hash": "d0a326eea83f4012d7a6f1b97b99f49e",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -46,6 +46,56 @@
                 "cbor"
             ],
             "time": "2018-03-27T20:29:49+00:00"
+        },
+        {
+            "name": "freedsx/asn1",
+            "version": "0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FreeDSx/ASN1.git",
+                "reference": "d1f7c9dc0bbe047a95a527cd134e3d7dece97ac3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FreeDSx/ASN1/zipball/d1f7c9dc0bbe047a95a527cd134e3d7dece97ac3",
+                "reference": "d1f7c9dc0bbe047a95a527cd134e3d7dece97ac3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpspec/phpspec": "^5.0"
+            },
+            "suggest": {
+                "ext-gmp": "For big integer support in Integer/Enumerated/OID types and tag numbers."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FreeDSx\\Asn1\\": "src/FreeDSx/Asn1"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chad Sikorra",
+                    "email": "Chad.Sikorra@gmail.com"
+                }
+            ],
+            "description": "An ASN.1 library for PHP.",
+            "homepage": "https://github.com/FreeDSx/ASN1",
+            "keywords": [
+                "DER",
+                "asn.1",
+                "asn1",
+                "ber",
+                "x.690"
+            ],
+            "time": "2019-03-10T22:33:37+00:00"
         }
     ],
     "packages-dev": [],
