@@ -9,6 +9,8 @@
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\COSE;
 
 
+use Elliptic\EdDSA;
+
 class PublicKeyOctet extends PublicKeyData
 {
     /** @var string $XCoord */
@@ -27,7 +29,12 @@ class PublicKeyOctet extends PublicKeyData
 
     public function Verify(string $data, string $signature): bool
     {
-        // TODO: Implement Verify() method.
-        return false;
+        $hashAlg = COSE::GetHashAlg($this->Algorithm);
+        $dataHash = hash($hashAlg, $data, true);
+
+        $ec = new EdDSA('ed25519');
+        $key = $ec->keyFromPublic($this->XCoord);
+
+        return $key->verify($dataHash, $signature);
     }
 }
