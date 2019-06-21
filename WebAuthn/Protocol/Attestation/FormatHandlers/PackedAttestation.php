@@ -70,12 +70,12 @@ class PackedAttestation implements AttestationFormatHandler
         }
 
         // Check x5c is set, if so handle Certificate Attestation
-        if(isset($attestationObject->AttStatement["x5c"]) and false) { //TODO remove "and false" after finished self attestation
+        if(isset($attestationObject->AttStatement["x5c"])) {
             return static::handleCertificateAttestation($attestationObject, $clientDataHash);
         }
 
         // Check ecdaaKeyId is set, if so handle ECDAA Attestation.
-        if(isset($attestationObject->AttStatement["ecdaaKeyId"]) and false){ //TODO remove "and false" after finished self attestation
+        if(isset($attestationObject->AttStatement["ecdaaKeyId"])){
             return static::handleECDAAAttestation($attestationObject, $clientDataHash);
         }
 

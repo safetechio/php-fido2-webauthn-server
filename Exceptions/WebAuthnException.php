@@ -67,4 +67,6 @@ class WebAuthnException extends FIDO2Exception
     const ATTESTATION_ALGORITHM_MISMATCH = 31;
 
     const ATTESTATION_SIGNATURE_INVALID = 32;
+
+    const ATTESTATION_UNSUPPORTED_ALGORITHM = 33;
 }
