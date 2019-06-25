@@ -2,6 +2,8 @@
 
 ## WebAuthn
 
+For more detailed example of the library please see the  [dedicated repo](https://github.com/SAFETECHio/PHP-FIDO2-Example).
+
 ### WebAuthn Initialise
 
 ```php
