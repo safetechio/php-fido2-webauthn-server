@@ -34,14 +34,24 @@ class WebAuthnServer
      * @param User $user
      * @param SessionData $sessionData
      * @param string $credentialCreationResponse
-     * @return string
+     * @return Credential
      * @throws WebAuthnException
      */
-    public function completeRegistration(User $user, SessionData $sessionData, string $credentialCreationResponse)
+    public function completeRegistration(User $user, SessionData $sessionData, string $credentialCreationResponse): Credential
     {
         $completeReg = new WebAuthnCompleteRegistration($user, $sessionData, $credentialCreationResponse, $this->config);
-        $completeReg->Verify();
-        return "";
+        $pccd = $completeReg->Parse();
+        $completeReg->Verify($pccd);
+
+       return new Credential(
+            $pccd->Response->AttestationObject->AuthData->AttData->CredentialID,
+            $pccd->Response->AttestationObject->AuthData->AttData->CredentialPublicKey,
+            $pccd->Response->AttestationObject->Format,
+            new Authenticator(
+                $pccd->Response->AttestationObject->AuthData->AttData->AAGUID,
+                $pccd->Response->AttestationObject->AuthData->Counter
+            )
+        );
     }
 
     public function beginAuthentication(User $user)
