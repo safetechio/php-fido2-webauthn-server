@@ -1,4 +1,12 @@
 {
+    "name": "SAFETECHio/FIDO2_SERVER_Libraries",
+    "description": "FIDO 2 / WebAuthn Server library for php",
+    "authors": [
+        {
+            "name": "Samuel Hawksby-Robinson",
+            "email": "samuel@samyoul.com"
+        }
+    ],
     "autoload": {
         "psr-4": {"SAFETECHio\\FIDO2\\": "."}
     },
