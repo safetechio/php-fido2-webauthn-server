@@ -61,15 +61,6 @@ class WebAuthnConfig
             );
         }
 
-        // Check that the Relying Party's ID is a valid URI
-        if (filter_var($this->RPID, FILTER_VALIDATE_URL) === FALSE)
-        {
-            throw new WebAuthnException(
-                "RPID not a valid URI",
-                WebAuthnException::RP_ID_NOT_VALID_URI
-            );
-        }
-
         // Check that the Timeout value is greater than zero, if not set it to 60000
         if($this->Timeout >! 0)
         {
