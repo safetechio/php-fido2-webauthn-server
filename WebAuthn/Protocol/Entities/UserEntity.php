@@ -2,6 +2,7 @@
 
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Entities;
 
+use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Contracts\User;
 
 /** See https://www.w3.org/TR/webauthn/#sctn-user-credential-params */
@@ -31,7 +32,7 @@ class UserEntity extends CredentialEntity
     public function jsonSerialize(): array
     {
         $json = parent::jsonSerialize();
-        $json["id"] = $this->ID;
+        $json["id"] = Tools::base64u_encode($this->ID);
 
         if(strlen($this->DisplayName) > 0){
             $json["displayName"] = $this->DisplayName;

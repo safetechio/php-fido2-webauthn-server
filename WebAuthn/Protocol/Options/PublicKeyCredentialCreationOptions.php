@@ -2,6 +2,7 @@
 
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Options;
 
+use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Entities\RelyingPartyEntity;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Entities\UserEntity;
 
@@ -38,7 +39,7 @@ class PublicKeyCredentialCreationOptions implements \JsonSerializable
     public function jsonSerialize()
     {
         $outPut = [
-            "challenge" => $this->Challenge,
+            "challenge" => Tools::base64u_encode($this->Challenge),
             "rp" => $this->RelyingParty,
             "user" => $this->User
         ];
