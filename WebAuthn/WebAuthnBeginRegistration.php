@@ -35,9 +35,13 @@ class WebAuthnBeginRegistration
      */
     public function __construct(User $user, WebAuthnConfig $config)
     {
+        $this->user = $user;
+
+        $this->config = $config;
+
         $challenge = Tools::createChallenge();
 
-        $webAuthnUser = UserEntity::FromUser($user);
+        $webAuthnUser = UserEntity::FromUser($this->user);
 
         $relyingParty = RelyingPartyEntity::FromConfig($this->config);
 
