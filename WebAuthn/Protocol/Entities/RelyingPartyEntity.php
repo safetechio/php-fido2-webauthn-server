@@ -24,7 +24,7 @@ class RelyingPartyEntity extends CredentialEntity
         return $rp;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $json = parent::jsonSerialize();
         $json["id"] = $this->ID;

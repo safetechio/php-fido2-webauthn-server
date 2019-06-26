@@ -28,7 +28,7 @@ class UserEntity extends CredentialEntity
         return $u;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $json = parent::jsonSerialize();
         $json["id"] = $this->ID;
@@ -36,5 +36,7 @@ class UserEntity extends CredentialEntity
         if(strlen($this->DisplayName) > 0){
             $json["displayName"] = $this->DisplayName;
         }
+
+        return $json;
     }
 }

@@ -11,7 +11,7 @@ class CredentialEntity implements \JsonSerializable
     /** @var string $Icon*/
 	public $Icon;
 
-	public function jsonSerialize()
+	public function jsonSerialize(): array
     {
         $json = [
             "name" => $this->Name
@@ -20,5 +20,7 @@ class CredentialEntity implements \JsonSerializable
         if(strlen($this->Icon) > 0){
             $json["icon"] = $this->Icon;
         }
+
+        return $json;
     }
 }
