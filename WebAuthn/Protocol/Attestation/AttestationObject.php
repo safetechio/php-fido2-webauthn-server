@@ -54,7 +54,7 @@ class AttestationObject
         $clientDataJSONHash = Tools::SHA256(base64_decode($RawClientData), true);
 
         // Calculate the SHA256 hash of the Relying Party ID
-        $relyingPartyIDHash = Tools::SHA256($relyingPartyID);
+        $relyingPartyIDHash = Tools::SHA256($relyingPartyID, true);
 
         // Verify the Auth Data
         $this->AuthData->Verify($verifyUser, $relyingPartyIDHash);
