@@ -2,6 +2,8 @@
 
 namespace SAFETECHio\FIDO2\WebAuthn\Contracts;
 
+use SAFETECHio\FIDO2\WebAuthn\Credential;
+
 interface User {
 
     /**
@@ -28,7 +30,6 @@ interface User {
      */
     public function WebAuthnIcon(): string;
 
-    // TODO define Credential class
     /**
      * User's stored Credentials
      * @return Credential[]
