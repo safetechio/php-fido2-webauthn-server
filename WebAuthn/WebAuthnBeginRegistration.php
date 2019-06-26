@@ -52,6 +52,7 @@ class WebAuthnBeginRegistration
             UserVerificationRequirement::VerificationPreferred
         );
 
+        // TODO Move object init to PublicKeyCredentialCreationOptions constructor
         $creationOptions = new PublicKeyCredentialCreationOptions();
         $creationOptions->Challenge = $challenge;
         $creationOptions->RelyingParty = $relyingParty;
@@ -60,6 +61,9 @@ class WebAuthnBeginRegistration
         $creationOptions->AuthenticatorSelection = $authSelection;
         $creationOptions->Timeout = $this->config->Timeout;
         $creationOptions->Attestation = ConveyancePreference::PreferDirectAttestation; // The Default is `none`
+
+        // TODO // Exclude already existing credentials for the user `excludeCredentials`
+        /** @see https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions */
 
         $this->creationOptions = $creationOptions;
     }
