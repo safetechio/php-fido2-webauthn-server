@@ -7,6 +7,8 @@ use CBOR\CBOREncoder;
 use CBOR\Types\CBORByteString;
 use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 use SAFETECHio\FIDO2\Tools\Tools;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\AttestationFormatHandlerFactory;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\FidoU2FAttestation;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\PackedAttestation;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Authenticator\AuthenticatorData;
 
@@ -82,13 +84,8 @@ class AttestationObject
             return;
         }
 
-        // TODO add additional attestation format handling
-        switch ($this->Format){
-            case AttestationObjectFormat::PACKED:
-                PackedAttestation::Verify($this, $clientDataJSONHash);
-                break;
-            default:
-                throw new \Exception("Attestation format not yet supported : " . $this->Format);
-        }
+        // Verify the attestation
+        $handler = AttestationFormatHandlerFactory::Make($this->Format);
+        $handler->Verify($this, $clientDataJSONHash);
     }
 }
