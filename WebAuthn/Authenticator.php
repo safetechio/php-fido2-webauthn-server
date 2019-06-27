@@ -3,7 +3,9 @@
 namespace SAFETECHio\FIDO2\WebAuthn;
 
 
-class Authenticator
+use SAFETECHio\FIDO2\Tools\Tools;
+
+class Authenticator implements \JsonSerializable
 {
     /** @var string $AAGUID */
     public $AAGUID;
@@ -34,5 +36,13 @@ class Authenticator
             $this->CloneWarning = true;
 	    }
         $this->SignCount = $count;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            "AAGUID" => Tools::base64u_encode($this->AAGUID),
+            "SignCount" => $this->SignCount,
+        ];
     }
 }

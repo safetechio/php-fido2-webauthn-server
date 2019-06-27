@@ -3,7 +3,9 @@
 namespace SAFETECHio\FIDO2\WebAuthn;
 
 
-class Credential
+use SAFETECHio\FIDO2\Tools\Tools;
+
+class Credential implements \JsonSerializable
 {
     /** @var string $ID */
     public $ID;
@@ -30,5 +32,18 @@ class Credential
         $this->PublicKey = $publicKey;
         $this->AttestationType = $attestationType;
         $this->Authenticator = $authenticator;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            "ID" => Tools::base64u_encode($this->ID),
+            "PublicKey" => Tools::base64u_encode($this->PublicKey),
+            "AttestationType" => $this->AttestationType,
+            "Authenticator" => $this->Authenticator,
+        ];
     }
 }
