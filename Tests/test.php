@@ -8,6 +8,7 @@ ini_set('xdebug.var_display_max_data', '4096');
 use SAFETECHio\FIDO2\Certificates\Certificate;
 use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\AuthenticatorAttestationResponse;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\FidoU2FAttestation;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\PackedAttestation;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\ParsedAttestationResponse;
 
@@ -31,7 +32,17 @@ $selfAttestedRSAResponseJSON = '{
     "type": "public-key"
 }';
 
-$registrationResponse = json_decode($selfAttestedRSAResponseJSON, true);
+$fidoU2FResponseJSON = '{
+    "id":"dzTIpxYHcLwtLewbpTe6ozMFp_s4CFs7QhwUXZ6gcV_7yCdP77q2aoyQZaPZHrHlCvv5SVC1EB79eE6C8sjPjg",
+    "rawId":"dzTIpxYHcLwtLewbpTe6ozMFp_s4CFs7QhwUXZ6gcV_7yCdP77q2aoyQZaPZHrHlCvv5SVC1EB79eE6C8sjPjg",
+    "type":"public-key",
+    "response":{
+        "attestationObject":"o2NmbXRoZmlkby11MmZnYXR0U3RtdKJjc2lnWEcwRQIgLVrfSLDWq_MSspaNrpSEypxLz6jbjHc_l1edQEv0U2ECIQCP80TTI_IZFpYYYZEyOfqFphYAJjKAHTHonKtpenPT42N4NWOBWQJIMIICRDCCAS6gAwIBAgIEeMDfDjALBgkqhkiG9w0BAQswLjEsMCoGA1UEAxMjWXViaWNvIFUyRiBSb290IENBIFNlcmlhbCA0NTcyMDA2MzEwIBcNMTQwODAxMDAwMDAwWhgPMjA1MDA5MDQwMDAwMDBaMCoxKDAmBgNVBAMMH1l1YmljbyBVMkYgRUUgU2VyaWFsIDIwMjU5MDU5MzQwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAS1uHFcg_3-DqFcRXeshY30jBdv3oedyvS4PUDTIPJvreYl_Pf1yK_YNRj4254h7Ag7GEWAxxfsSkcLlopvuj9vozswOTAiBgkrBgEEAYLECgIEFTEuMy42LjEuNC4xLjQxNDgyLjEuMTATBgsrBgEEAYLlHAIBAQQEAwIFIDALBgkqhkiG9w0BAQsDggEBAD72q_ZKkWsL-ZSTjdyVNOBUQAJoVninLEOnq-ZdkGX_YfRRzoo67thmidGQuVCvAHpU0THu8G_ia06nuz4yt5IFpd-nYAQ0U-NK-ETDfNSoX4xcLYcOCiiyt-1EAkH9s3krIHaw4Yr6m0Mu7vwmWLoJBcQbJKk8bsi7ptVvM-jWU9fPa9UBVFWiZZdA99zFHMAxYJzQPqbN6Tmeygh2MpB2P7TI0A9WkGmhJUkAauuwaiGiFOSZmDe0KegdflbTOlSS3ToWHIKTlUCBqn7vdJw6Vj2919ujlcxHPkRpbUGRhcJDesg6wGTBy-RyJ_96G3fH1eoMNn1F9jC9mY1Zsm5oYXV0aERhdGFYxEmWDeWIDoxodDQXD2R2YFuP5K65ooYyx5lc87qDHZdjQQAAAAAAAAAAAAAAAAAAAAAAAAAAAEB3NMinFgdwvC0t7BulN7qjMwWn-zgIWztCHBRdnqBxX_vIJ0_vurZqjJBlo9keseUK-_lJULUQHv14ToLyyM-OpQECAyYgASFYIO0XU8KKUEAc7VRL0wtIQT34rMKsFQD_RnLcaACMtbvPIlggKcKPQ0_ATnZIg7MWXzbJJInK6GQVXgxhuElJ74vJypo",
+        "clientDataJSON":"eyJjaGFsbGVuZ2UiOiJUVUZVU0VzeloycG9aV05YU1hGaE1XeGxiWEJGUm1aMVZrZHdlbU5NUW1kdU1tWkRja1pEZVZvelNRIiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgyIiwidHlwZSI6IndlYmF1dGhuLmNyZWF0ZSJ9"
+    }
+}';
+
+$registrationResponse = json_decode($fidoU2FResponseJSON, true);
 var_dump($registrationResponse);
 
 $aar = new AuthenticatorAttestationResponse($registrationResponse["response"]);
@@ -44,7 +55,9 @@ try{
     $JSONHashRaw = Tools::SHA256(base64_decode($aar->ClientDataJSON), true);
     var_dump($JSONHashRaw);
 
-    PackedAttestation::Verify($par->AttestationObject, $JSONHashRaw);
+    //PackedAttestation::Verify($par->AttestationObject, $JSONHashRaw);
+    FidoU2FAttestation::Verify($par->AttestationObject, $JSONHashRaw);
+
 } catch (Throwable $exception) {
     var_dump($exception);
 }

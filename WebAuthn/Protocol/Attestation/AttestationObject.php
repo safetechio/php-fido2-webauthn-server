@@ -8,8 +8,6 @@ use CBOR\Types\CBORByteString;
 use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\AttestationFormatHandlerFactory;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\FidoU2FAttestation;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers\PackedAttestation;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Authenticator\AuthenticatorData;
 
 /** See AttestationObject https://www.w3.org/TR/webauthn/#attestation-object */
