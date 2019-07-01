@@ -54,9 +54,15 @@ class WebAuthnServer
         );
     }
 
+    /**
+     * @param User $user
+     * @return WebAuthnBeginAuthentication
+     * @throws ToolException
+     * @throws WebAuthnException
+     */
     public function beginAuthentication(User $user)
     {
-        return [];
+        return new WebAuthnBeginAuthentication($user, $this->config);
     }
 
     public function completeAuthentication(User $user, SessionData $sessionData)
