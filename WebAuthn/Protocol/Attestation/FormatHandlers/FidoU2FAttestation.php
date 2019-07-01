@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: samyo
- * Date: 27/06/2019
- * Time: 17:45
- */
 
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Attestation\FormatHandlers;
 

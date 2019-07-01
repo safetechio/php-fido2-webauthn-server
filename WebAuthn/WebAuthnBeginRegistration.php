@@ -62,9 +62,6 @@ class WebAuthnBeginRegistration
         $creationOptions->Timeout = $this->config->Timeout;
         $creationOptions->Attestation = ConveyancePreference::PreferDirectAttestation; // The Default is `none`
 
-        // TODO // Exclude already existing credentials for the user `excludeCredentials`
-        /** @see https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions */
-
         $this->creationOptions = $creationOptions;
     }
 
@@ -95,6 +92,8 @@ class WebAuthnBeginRegistration
     /**
      * @param CredentialDescriptor[] $excludeList
      * @return WebAuthnBeginRegistration $this
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions/excludeCredentials
      */
     public function WithExclusions(array $excludeList)
     {
