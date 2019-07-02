@@ -39,7 +39,10 @@ class PublicKeyCredentialRequestOptions implements \JsonSerializable
         return $out;
     }
 
-    public function jsonSerialize()
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
     {
         $json = [
             "challenge" => Tools::base64u_encode($this->Challenge)
@@ -65,5 +68,6 @@ class PublicKeyCredentialRequestOptions implements \JsonSerializable
             $json["userVerification"] = $this->Extensions;
         }
 
+        return $json;
     }
 }
