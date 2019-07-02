@@ -3,7 +3,9 @@
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Options;
 
 
-class PublicKeyCredentialRequestOptions
+use SAFETECHio\FIDO2\Tools\Tools;
+
+class PublicKeyCredentialRequestOptions implements \JsonSerializable
 {
     /** @var string $Challenge */
     public $Challenge;
@@ -35,5 +37,33 @@ class PublicKeyCredentialRequestOptions
         }
 
         return $out;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = [
+            "challenge" => Tools::base64u_encode($this->Challenge)
+        ];
+
+        if(isset($this->Timeout) || $this->Timeout != 0){
+            $json["timeout"] = $this->Timeout;
+        }
+
+        if(isset($this->RelyingPartyID) || $this->RelyingPartyID != ""){
+            $json["rpId"] = $this->RelyingPartyID;
+        }
+
+        if(count($this->AllowedCredentials) > 0){
+            $json["allowCredentials"] = $this->AllowedCredentials;
+        }
+
+        if(isset($this->UserVerification) || $this->UserVerification != ""){
+            $json["userVerification"] = $this->UserVerification;
+        }
+
+        if(count($this->Extensions) > 0){
+            $json["userVerification"] = $this->Extensions;
+        }
+
     }
 }
