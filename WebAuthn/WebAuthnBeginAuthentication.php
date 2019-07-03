@@ -45,23 +45,13 @@ class WebAuthnBeginAuthentication
             );
         }
 
-        $allowedCredentials = [];
-        foreach($credentials as $credential){
-            $cd = new CredentialDescriptor();
-
-            $cd->CredentialID = $credential->ID;
-            $cd->Type = "public-key";
-
-            $allowedCredentials[] = $cd;
-        }
-
         // TODO move PublicKeyCredentialRequestOptions init code into constructor.
         $requestOptions = new PublicKeyCredentialRequestOptions();
         $requestOptions->Challenge = $challenge;
         $requestOptions->Timeout = $config->Timeout;
         $requestOptions->RelyingPartyID = $config->RPID;
         $requestOptions->UserVerification = $config->AuthenticatorSelection->UserVerification;
-        $requestOptions->AllowedCredentials = $allowedCredentials;
+        $requestOptions->AllowedCredentials = $user->WebAuthnAllowedCredentials();
 
         $this->requestOptions = $requestOptions;
     }
