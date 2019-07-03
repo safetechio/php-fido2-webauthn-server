@@ -35,4 +35,10 @@ interface User {
      * @return Credential[]
      */
     public function WebAuthnCredentials(): array;
+
+    /**
+     * User's stored Credentials
+     * @return Credential[]
+     */
+    public function WebAuthnAllowedCredentials(): array;
 }
