@@ -8,7 +8,6 @@ use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Contracts\User;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\CredentialAssertion;
-use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\CredentialDescriptor;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Options\PublicKeyCredentialRequestOptions;
 
 class WebAuthnBeginAuthentication

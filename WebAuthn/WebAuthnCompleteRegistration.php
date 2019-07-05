@@ -50,6 +50,7 @@ class WebAuthnCompleteRegistration
 
     /**
      * @throws WebAuthnException | \Exception
+     * @return ParsedCredentialCreationData
      */
     public function Parse(): ParsedCredentialCreationData
     {
