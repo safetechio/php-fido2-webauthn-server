@@ -65,8 +65,17 @@ class WebAuthnServer
         return new WebAuthnBeginAuthentication($user, $this->config);
     }
 
-    public function completeAuthentication(User $user, SessionData $sessionData)
+    /**
+     * @param User $user
+     * @param SessionData $sessionData
+     * @param string $credentialAssertionResponse
+     * @throws WebAuthnException
+     * @throws \ReflectionException
+     */
+    public function completeAuthentication(User $user, SessionData $sessionData, string $credentialAssertionResponse)
     {
-        return "";
+        $completeAuth = new WebAuthnCompleteAuthentication($user, $sessionData, $credentialAssertionResponse, $this->config);
+        $pcad = $completeAuth->Parse();
+        $completeAuth->Verify($pcad);
     }
 }
