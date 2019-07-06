@@ -3,6 +3,7 @@
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Assertion;
 
 
+use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Authenticator\AuthenticatorResponse;
 
 class AuthenticatorAssertionResponse extends AuthenticatorResponse
@@ -18,9 +19,9 @@ class AuthenticatorAssertionResponse extends AuthenticatorResponse
 
     public function __construct(array $response)
     {
-        $this->AuthenticatorData = $response["authenticatorData"];
+        $this->AuthenticatorData = Tools::base64u_decode($response["authenticatorData"]);
         $this->ClientDataJSON = $response["clientDataJSON"];
-        $this->Signature = $response["signature"];
-        $this->UserHandle = $response["userHandle"];
+        $this->Signature = Tools::base64u_decode($response["signature"]);
+        $this->UserHandle = Tools::base64u_decode($response["userHandle"]);
     }
 }
