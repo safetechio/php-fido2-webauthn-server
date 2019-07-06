@@ -44,8 +44,6 @@ class PublicKeyEllipticCurve extends PublicKeyData
      */
     public function Verify(string $data, string $signature): bool
     {
-        var_dump($this->Algorithm);
-
         switch ($this->Algorithm){
             case COSE::AlgES256:
                 $ec = new EC('p256');
