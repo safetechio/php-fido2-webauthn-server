@@ -65,7 +65,7 @@ class PublicKeyCredentialRequestOptions implements \JsonSerializable
         }
 
         if(count($this->Extensions) > 0){
-            $json["userVerification"] = $this->Extensions;
+            $json["extensions"] = $this->Extensions;
         }
 
         return $json;
