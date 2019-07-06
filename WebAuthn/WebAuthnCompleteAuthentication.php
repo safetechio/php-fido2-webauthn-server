@@ -70,6 +70,7 @@ class WebAuthnCompleteAuthentication
         foreach ($this->user->WebAuthnCredentials() as $credential){
             if($credential->ID == $parsedCredentialCreationData->RawID){
                 $authenticationCredential = $credential;
+                break;
             }
         }
 
