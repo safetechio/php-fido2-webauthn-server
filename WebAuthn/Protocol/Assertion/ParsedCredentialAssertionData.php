@@ -87,8 +87,8 @@ class ParsedCredentialAssertionData extends ParsedPublicKeyCredential
             case COSEKeyTypes::RSAKey:
                 /** @var PublicKeyRSA $publicKey */
                 $pk = [
-                    "e" => new \phpseclib\Math\BigInteger(current(unpack('H*', $publicKey->Modulus)), 16),
-                    "n" => new \phpseclib\Math\BigInteger(current(unpack('H*', $publicKey->Exponent)), 16),
+                    "e" => new \phpseclib\Math\BigInteger(current(unpack('H*', $publicKey->Exponent)), 16),
+                    "n" => new \phpseclib\Math\BigInteger(current(unpack('H*', $publicKey->Modulus)), 16),
                 ];
 
                 $rsa = new RSA();
