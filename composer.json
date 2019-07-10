@@ -13,6 +13,6 @@
     "require": {
         "2tvenom/cborencode": "^1.0",
         "freedsx/asn1": "^0.4.1",
-        "simplito/elliptic-php": "^1.0"
+        "phpseclib/phpseclib": "2.0.*"
     }
 }

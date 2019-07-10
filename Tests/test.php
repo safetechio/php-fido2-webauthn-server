@@ -42,6 +42,17 @@ $fidoU2FResponseJSON = '{
     }
 }';
 
+$RSAAssertion = '{
+    "id":"L0qQcYTuFxXrKxloJ6LlE80BSAjBTk1jQEIPDvF-jOg",
+    "rawId":"L0qQcYTuFxXrKxloJ6LlE80BSAjBTk1jQEIPDvF-jOg",
+    "response":{
+        "authenticatorData":"SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAGA",
+        "clientDataJSON":"eyJjaGFsbGVuZ2UiOiJUekYyVmxod1pGbDBWbkl4TUZKTE5rNHlTRU5MUVZSck1FRnlRbUkzTlhrMlpuSnlOWFZVY2tNNVFRIiwiZXh0cmFfa2V5c19tYXlfYmVfYWRkZWRfaGVyZSI6ImRvIG5vdCBjb21wYXJlIGNsaWVudERhdGFKU09OIGFnYWluc3QgYSB0ZW1wbGF0ZS4gU2VlIGh0dHBzOi8vZ29vLmdsL3lhYlBleCIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MiIsInR5cGUiOiJ3ZWJhdXRobi5nZXQifQ"
+        "signature":"XUVi7FqGhGZ5r9VmpcmF-FXSuc59BrqoC1Zahh3qopyFC7_PN8bdhK_QRLjghbiuLfPYAH-Cg8NLsEzjiWhp3ue5J-lzSD6BbHKsWw70YVncd4uhQMrIx2dw3Rm-VRYn4gEl4yOIa-Rk8sP0VyB6FKdqikXZOirkZdCiNHU_68nWT0v0qSD_0s0FU08JoNNnb5nkGeX3PiSahdqM8iQUxUZGqjQjEkYGAJTlKxtM7F_d-Nm_9H3axVBQzLk1hGY_RE-0e2g0YZf2ZieKQ1Dk5xjrRpgOyVI9RoSpSVty5Une-mp62SvmR5d7uV5RudAM4Gyj6NiprMEMwHGNgXAKMg"
+    "userHandle":"MWU4NGEwZmEtOTk5Ny0xMWU5LWJhN2ItMDI0MmFjMTQwMDAy",
+    "type":"public-key"
+}';
+
 $registrationResponse = json_decode($fidoU2FResponseJSON, true);
 var_dump($registrationResponse);
 

@@ -1,14 +1,17 @@
 <?php
 
+
 namespace SAFETECHio\FIDO2\WebAuthn\Protocol\Assertion;
 
-
+use phpseclib\Crypt\RSA;
 use SAFETECHio\FIDO2\Exceptions\WebAuthnException;
 use SAFETECHio\FIDO2\PublicKeys\PublicKey;
 use SAFETECHio\FIDO2\Tools\Tools;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Client\CeremonyType;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\COSE\COSEKeyTypes;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\COSE\PublicKeyEllipticCurve;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\COSE\PublicKeyFactory;
+use SAFETECHio\FIDO2\WebAuthn\Protocol\COSE\PublicKeyRSA;
 use SAFETECHio\FIDO2\WebAuthn\Protocol\Credentials\ParsedPublicKeyCredential;
 
 class ParsedCredentialAssertionData extends ParsedPublicKeyCredential
@@ -69,13 +72,38 @@ class ParsedCredentialAssertionData extends ParsedPublicKeyCredential
         /** From 16 : a valid signature over the binary concatenation of authData and hash */
         $signedData = $this->Raw->AssertionResponse->AuthenticatorData . $clientDataHash;
 
-        /** @var PublicKeyEllipticCurve $publicKey */
         $publicKey = PublicKeyFactory::Make($credentialPublicKey);
-        $publicKeyForPEM= "\x04" . $publicKey->XCoord . $publicKey->YCoord;
-        $PEM = PublicKey::fromString($publicKeyForPEM)->toPEM();
 
-        $result = openssl_verify($signedData, $this->Response->Signature, $PEM, OPENSSL_ALGO_SHA256);
-        if($result !== 1){
+        // TODO this needs a good refactor, move the verification into the key classes
+        $result = 0;
+        switch ($publicKey->KeyType) {
+            case COSEKeyTypes::EllipticKey:
+                /** @var PublicKeyEllipticCurve $publicKey */
+                $publicKeyForPEM = "\x04" . $publicKey->XCoord . $publicKey->YCoord;
+                $PEM = PublicKey::fromString($publicKeyForPEM)->toPEM();
+
+                $result = openssl_verify($signedData, $this->Response->Signature, $PEM, OPENSSL_ALGO_SHA256);
+                break;
+            case COSEKeyTypes::RSAKey:
+                /** @var PublicKeyRSA $publicKey */
+                $pk = [
+                    "e" => new \phpseclib\Math\BigInteger(current(unpack('H*', $publicKey->Modulus)), 16),
+                    "n" => new \phpseclib\Math\BigInteger(current(unpack('H*', $publicKey->Exponent)), 16),
+                ];
+
+                $rsa = new RSA();
+                $rsa->loadKey($pk);
+                $rsa->setHash("sha256");
+                $rsa->setSignatureMode(RSA::SIGNATURE_PKCS1);
+
+                $pem = $rsa->getPublicKey();
+                $result = openssl_verify($signedData, $this->Response->Signature, $pem, OPENSSL_ALGO_SHA256);
+                break;
+            case COSEKeyTypes::OctetKey:
+                break;
+        }
+
+        if ($result !== 1) {
             throw new WebAuthnException(
                 "Signature does not verify",
                 WebAuthnException::ATTESTATION_SIGNATURE_INVALID
